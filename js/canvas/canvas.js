@@ -14,9 +14,20 @@ export const mouse = {
 // canvas afmetingen
 export function resizeCanvas() {
   const sidebarWidth = sidebar ? sidebar.offsetWidth : 0;
-  canvas.width = window.innerWidth - sidebarWidth;
-  canvas.height = window.innerHeight;
+  const dpr = window.devicePixelRatio || 1;
+
+  const cssWidth = window.innerWidth - sidebarWidth;
+  const cssHeight = window.innerHeight;
+
+  canvas.style.width = cssWidth + "px";
+  canvas.style.height = cssHeight + "px";
+
+  canvas.width = cssWidth * dpr;
+  canvas.height = cssHeight * dpr;
+
+  ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
 }
+
 
 // mouse tracking
 canvas.addEventListener("mousemove", (e) => {

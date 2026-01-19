@@ -40,7 +40,12 @@ export function startRenderLoop() {
             if (hoveredBolletje) {
                 const b = hoveredBolletje;
                 const floatOffset = Math.sin(b.floatPhase) * b.floatAmount;
-                addClusterLabel(b, b.homeX, b.homeY + floatOffset - b.r - 8);
+
+                addClusterLabel(
+                    b,
+                    b.homeX,
+                    b.homeY + floatOffset 
+                );
             }
         }
 
