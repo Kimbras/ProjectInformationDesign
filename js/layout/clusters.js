@@ -24,3 +24,14 @@ export function sortByMadeLocation(bolletjes) {
 export function sortByCurrentLocation(bolletjes) {
   return [...bolletjes].sort((a, b) => a.data.currentLocation.localeCompare(b.data.currentLocation));
 }
+
+// Groepeer bolletjes op jaar
+export function groupByYear(bolletjes) {
+  const map = {};
+  bolletjes.forEach(b => {
+    const year = b.data.year;
+    if (!map[year]) map[year] = [];
+    map[year].push(b);
+  });
+  return map; 
+}

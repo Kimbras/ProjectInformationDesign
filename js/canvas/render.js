@@ -17,24 +17,39 @@ export function startRenderLoop() {
         if (mode === "paintings") {
             hoveredBolletje = null;
 
+            // Bolletjes tekenen
             bolletjes.forEach(b => {
-                // subtiel float-effect
                 const floatOffset = Math.sin(b.floatPhase) * b.floatAmount;
+                b.floatPhase += b.floatSpeed;
+
+                const drawX = b.homeX;
                 const drawY = b.homeY + floatOffset;
 
-                // muis-check
-                const dx = mouse.x - b.x;
-                const dy = mouse.y - drawY;
-                if (Math.sqrt(dx * dx + dy * dy) < b.r) {
-                    hoveredBolletje = b;
-                }
-
-                // bolletje tekenen
+                // bolletje
                 ctx.fillStyle = b.color;
                 ctx.beginPath();
-                ctx.arc(b.x, drawY, b.r, 0, Math.PI * 2);
+                ctx.arc(drawX, drawY, b.r, 0, Math.PI * 2);
                 ctx.fill();
+
+                // hovered label
+                if (hoveredBolletje === b) {
+                    addClusterLabel(b, drawX, drawY - b.r - 8);
+                }
             });
+
+            // Jaartal boven rij tekenen (1x per jaar)
+            const drawnYears = new Set();
+            bolletjes.forEach(b => {
+                const year = b.data.year;
+                if (b.yearLabelX && !drawnYears.has(year)) {
+                    ctx.fillStyle = "black";
+                    ctx.font = "20px sans-serif";
+                    ctx.textAlign = "center";  // boven kolom centreren
+                    ctx.fillText(year, b.yearLabelX, b.yearLabelY);
+                    drawnYears.add(year);
+                }
+            });
+
 
             // label tekenen
             if (hoveredBolletje) {
