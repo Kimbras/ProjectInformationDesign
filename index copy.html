@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="nl">
+<head>
+  <meta charset="UTF-8" />
+  <title>800 Bolletjes sorteren</title>
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+  <div class="app">
+
+    
+    <!-- Sidebar links -->
+ <div class="ui" id="sidebar">
+  <button id="toggleSidebar">☰</button> <!-- toggle-knop -->
+<h1>Filter het zelf</h1>
+  <button id="showPaintingsBtn"class="mainBtn" data-group="schilderijen">Schilderijen</button>
+  <button id="showPaintingsBtn"class="subBtn" data-group="schilderijen" onclick="sortByYear()">Jaar</button>
+  <button id="showPaintingsBtn"class="subBtn" data-group="schilderijen" onclick="sortBySize()">Grootte</button>
+  <button id="showPaintingsBtn"class="subBtn" data-group="schilderijen" onclick="sortByMadeLocation()">Gemaakt in</button>
+  <button id="showPaintingsBtn"class="subBtn" data-group="schilderijen" onclick="sortByCurrentLocation()">Nu in museum</button>
+
+  <button class="mainBtn" data-group="brieven">Brieven</button>
+  <button id="showLettersBtn" class="subBtn" data-group="brieven" onclick="VanGogh()">Hoe dacht van Gogh</button>
+  <button class="subBtn" data-group="brieven" onclick="Nederlanders()">Wat vonden Nederlanders van hem</button>
+</div>
+
+
+<div id="canvasContainer">
+      <canvas id="canvas"></canvas>
+      <div id="storyOverlay"></div>
+    </div>
+    </div>
+
+  <script src="script.js"></script>
+</body>
+</html>
