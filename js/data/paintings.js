@@ -1,9 +1,40 @@
 // js/data/paintings.js
+
 export const paintings = [
-  { title: "Amandelbloesem", year: 1890, width: 60, height: 70 },
-  { title: "Sterrennacht", year: 1889, width: 73, height: 92 },
-  { title: "Zonnebloemen", year: 1888, width: 92, height: 73 },
-  { title: "De slaapkamer", year: 1888, width: 72, height: 90 },
-  { title: "Irissen", year: 1889, width: 71, height: 93 },
-  { title: "De aardappeleters", year: 1885, width: 82, height: 114 }
+  {
+    image: "https://data.spinque.com/iiif/2/vangoghworldwide%2Fvgm%2Fs0176V1962_gb.jpg/full/!682,440/0/default.jpg",
+    title: "Amandelbloesem",
+    year: 1890,
+    madeIn: "Saint-Rémy, Frankrijk",
+    currentLocation: "Van Gogh Museum",
+    width: 92.0,
+    height: 73.5
+  },
+  {
+     image: "https://data.spinque.com/iiif/2/vangoghworldwide%2Fvgm%2Fs0176V1962_gb.jpg/full/!682,440/0/default.jpg",
+    title: "Bloeiende amandelboom (detailstudie)",
+    year: 1890,
+    madeIn: "Saint-Rémy, Frankrijk",
+    currentLocation: "Van Gogh Museum",
+    width: 46.0,
+    height: 55.0
+  },
+  {
+     image: "https://data.spinque.com/iiif/2/vangoghworldwide%2Fvgm%2Fs0176V1962_gb.jpg/full/!682,440/0/default.jpg",
+    title: "Bloeiende perzikbomen",
+    year: 1888,
+    madeIn: "Arles, Frankrijk",
+    currentLocation: "Van Gogh Museum",
+    width: 92.0,
+    height: 73.0
+  },
+  {
+     image: "https://data.spinque.com/iiif/2/vangoghworldwide%2Fvgm%2Fs0176V1962_gb.jpg/full/!682,440/0/default.jpg",
+    title: "Bloemenvaas met klaprozen",
+    year: 1886,
+    madeIn: "Parijs, Frankrijk",
+    currentLocation: "Van Gogh Museum",
+    width: 32.0,
+    height: 41.0
+  }
 ];
