@@ -35,12 +35,20 @@
 
 <body>
   <!-- Sidebar / UI -->
-  <div id="sidebar">
-    <button id="showPaintingsBtn">Paintings</button>
-    <button id="showLettersBtn">Letters</button>
-    <hr />
-    <div id="storyText"></div>
-  </div>
+<div id="sidebar">
+  <button id="showPaintingsBtn">Paintings</button>
+<div id="paintingsFilters" style="margin-left: 10px; margin-top: 5px; display: none;">
+  <button class="subBtn" id="sortByYearBtn">Jaar</button>
+  <button class="subBtn" id="sortBySizeBtn">Grootte</button>
+  <button class="subBtn" id="sortByMadeBtn">Gemaakt in</button>
+  <button class="subBtn" id="sortByCurrentBtn">Nu in museum</button>
+</div>
+
+
+  <button id="showLettersBtn">Letters</button>
+  <hr />
+  <div id="storyText"></div>
+</div>
 
   <!-- Canvas -->
   <canvas id="canvas"></canvas>
