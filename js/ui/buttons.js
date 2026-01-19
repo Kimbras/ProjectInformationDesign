@@ -61,9 +61,9 @@ lettersBtn.addEventListener("click", () => {
 
 // Sub-buttons koppelen
 sortByYearBtn.addEventListener("click", () => {
-    arrangeByYear(bolletjes); // berekent targetX en targetY
+    arrangeByYear(bolletjes); // berekent targetX/Y
 
-    // optioneel: verwijder oude labels
+    // verwijder oude labels
     bolletjes.forEach(b => {
         delete b.yearLabelX;
         delete b.yearLabelY;
@@ -72,26 +72,29 @@ sortByYearBtn.addEventListener("click", () => {
     // Labels boven de eerste bol per jaar
     const grouped = groupByYear(bolletjes);
     const years = Object.keys(grouped).sort((a, b) => a - b);
-    let currentX = startX;
 
+    let currentX = startX;
     years.forEach(year => {
         const column = grouped[year];
-        column.forEach((b, i) => {
-            b.yearLabelX = currentX;        // X voor het jaartal label
-            b.yearLabelY = startY - 30;     // Y boven de eerste bol
-        });
-        currentX += colSpacing;
+        // label boven eerste bolletje
+        if (column.length > 0) {
+            column[0].yearLabelX = currentX;
+            column[0].yearLabelY = startY - 30;
+        }
+        currentX += colSpacing; // volgende kolom
     });
 });
+
 
 
 sortBySizeBtn.addEventListener("click", () => {
     const sorted = sortBySize(bolletjes);
     sorted.forEach((b, i) => {
-        b.homeX = 100 + (i % 3) * 150;
-        b.homeY = 100 + Math.floor(i / 3) * 150;
+        b.targetX = 100 + (i % 3) * 150;
+        b.targetY = 100 + Math.floor(i / 3) * 150;
     });
 });
+
 
 sortByMadeBtn.addEventListener("click", () => {
     const sorted = sortByMadeLocation(bolletjes);
