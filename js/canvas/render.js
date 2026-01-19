@@ -16,13 +16,24 @@ export function startRenderLoop() {
         if (mode === "paintings") {
             hoveredBolletje = null;
 
+            const lerp = (start, end, amt) => start + (end - start) * amt;
+
             bolletjes.forEach(b => {
+                // update floatPhase
+                b.floatPhase += b.floatSpeed;
+
                 // subtiel float-effect
                 const floatOffset = Math.sin(b.floatPhase) * b.floatAmount;
+
+                // zachte beweging naar target
+                b.homeX = lerp(b.homeX, b.targetX, 0.05); // 0.05 is snelheid
+                b.homeY = lerp(b.homeY, b.targetY, 0.05);
+
+                // huidige positie (thuis + float)
                 const drawX = b.homeX;
                 const drawY = b.homeY + floatOffset;
 
-                // hover check: afstand van muis tot bolletje
+                // hover check
                 const dx = mouse.x - drawX;
                 const dy = mouse.y - drawY;
                 if (Math.sqrt(dx * dx + dy * dy) < b.r) {
@@ -36,6 +47,7 @@ export function startRenderLoop() {
                 ctx.fill();
             });
 
+
             // label tekenen boven het bolletje
             if (hoveredBolletje) {
                 const b = hoveredBolletje;
@@ -44,7 +56,7 @@ export function startRenderLoop() {
                 addClusterLabel(
                     b,
                     b.homeX,
-                    b.homeY + floatOffset 
+                    b.homeY + floatOffset
                 );
             }
         }

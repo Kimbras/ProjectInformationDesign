@@ -4,19 +4,23 @@ import { canvas } from "../canvas/canvas.js";
 
 export const bolletjes = paintings.map((p, i) => {
     const area = (p.width || 1) * (p.height || 1);
-    const radius = Math.sqrt(area) * 0.1; // verlaagde schaalfactor: kleinere bolletjes
+    const radius = Math.sqrt(area) * 0.1;
 
-    // preload image
     const img = new Image();
     img.src = p.image || "";
 
+    const x = Math.random() * canvas.width;
+    const y = Math.random() * canvas.height;
+
     return {
         data: p,
-        img, // voeg de image direct toe
-        x: Math.random() * canvas.width,
-        y: Math.random() * canvas.height,
-        homeX: Math.random() * canvas.width,
-        homeY: Math.random() * canvas.height,
+        img,
+        x,
+        y,
+        homeX: x,
+        homeY: y,
+        targetX: x,  // nieuwe target posities
+        targetY: y,
         r: radius,
         color: KLEUREN[i % KLEUREN.length],
         floatPhase: Math.random() * Math.PI * 2,

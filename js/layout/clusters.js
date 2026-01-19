@@ -35,3 +35,24 @@ export function groupByYear(bolletjes) {
   });
   return map; 
 }
+
+// js/layout/clusters.js
+export function arrangeByYear(bolletjes) {
+    const grouped = groupByYear(bolletjes); // gebruik je bestaande functie
+    const years = Object.keys(grouped).sort((a,b)=>a-b); // oplopend
+    const startX = 100;
+    const startY = 100;
+    const colSpacing = 150;
+    const rowSpacing = 120;
+
+    let currentX = startX;
+
+    years.forEach(year => {
+        const column = grouped[year];
+        column.forEach((b, i) => {
+            b.targetX = currentX;
+            b.targetY = startY + i * rowSpacing;
+        });
+        currentX += colSpacing;
+    });
+}

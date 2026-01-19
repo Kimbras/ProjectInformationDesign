@@ -20,10 +20,10 @@ html, body {
 margin-top: 5em;
 }
 
-.subBtn {
-  display: none;  /* standaard verborgen */
+/* .subBtn {
+  display: none;  
   margin-left: 10px;
-}
+} */
 
 .mainBtn.active {
   background: #5384c8;
