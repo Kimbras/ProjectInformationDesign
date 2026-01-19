@@ -4,7 +4,7 @@ import { canvas } from "../canvas/canvas.js";
 
 export const bolletjes = paintings.map((p, i) => {
     const area = (p.width || 1) * (p.height || 1);
-    const radius = Math.sqrt(area) * 0.2;
+    const radius = Math.sqrt(area) * 0.1; // verlaagde schaalfactor: kleinere bolletjes
 
     // preload image
     const img = new Image();

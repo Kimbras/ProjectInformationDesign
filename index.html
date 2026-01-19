@@ -3,57 +3,36 @@
 <head>
   <meta charset="UTF-8" />
   <title>Van Gogh Visualisatie</title>
-
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-
-  <style>
-    html, body {
-      margin: 0;
-      padding: 0;
-      overflow: hidden;
-      height: 100%;
-    }
-
-    body {
-      display: flex;
-      font-family: system-ui, sans-serif;
-    }
-
-    #sidebar {
-      width: 250px;
-      background: #f4f4f4;
-      border-right: 1px solid #ddd;
-      padding: 12px;
-      box-sizing: border-box;
-    }
-
-    canvas {
-      display: block;
-    }
-  </style>
+  <link rel="stylesheet" href="style.css" />
 </head>
-
 <body>
-  <!-- Sidebar / UI -->
-<div id="sidebar">
-  <button id="showPaintingsBtn">Paintings</button>
-<div id="paintingsFilters" style="margin-left: 10px; margin-top: 5px; display: none;">
-  <button class="subBtn" id="sortByYearBtn">Jaar</button>
-  <button class="subBtn" id="sortBySizeBtn">Grootte</button>
-  <button class="subBtn" id="sortByMadeBtn">Gemaakt in</button>
-  <button class="subBtn" id="sortByCurrentBtn">Nu in museum</button>
+  <div class="app">
+
+    
+    <!-- Sidebar links -->
+ <div class="ui" id="sidebar">
+  <button id="toggleSidebar">☰</button> <!-- toggle-knop -->
+<h1>Filter het zelf</h1>
+  <button id="showPaintingsBtn" class="mainBtn" data-group="schilderijen">Schilderijen</button>
+<button class="subBtn" data-group="schilderijen" id="sortByYearBtn">Jaar</button>
+<button class="subBtn" data-group="schilderijen" id="sortBySizeBtn">Grootte</button>
+<button class="subBtn" data-group="schilderijen" id="sortByMadeBtn">Gemaakt in</button>
+<button class="subBtn" data-group="schilderijen" id="sortByCurrentBtn">Nu in museum</button>
+
+
+  <button class="mainBtn" data-group="brieven">Brieven</button>
+  <button id="showLettersBtn" class="subBtn" data-group="brieven" onclick="VanGogh()">Hoe dacht van Gogh</button>
+  <button class="subBtn" data-group="brieven" onclick="Nederlanders()">Wat vonden Nederlanders van hem</button>
 </div>
 
 
-  <button id="showLettersBtn">Letters</button>
-  <hr />
-  <div id="storyText"></div>
-</div>
+<div id="canvasContainer">
+      <canvas id="canvas"></canvas>
+      <div id="storyOverlay"></div>
+    </div>
+    </div>
 
-  <!-- Canvas -->
-  <canvas id="canvas"></canvas>
-
-  <!-- ENTRY POINT -->
   <script type="module" src="./js/main.js"></script>
 </body>
 </html>
+

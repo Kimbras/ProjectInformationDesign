@@ -65,6 +65,7 @@ button {
   flex: 1;
    width: 100%;
   height: 100%;
+  margin-left: 30px;  /* reserveer ruimte voor sidebar */
   display: block;
   background: #020617;
 }
@@ -73,32 +74,32 @@ button {
   position: relative; 
   flex: 1;
   height: 100%;
-  margin-left: 0;
+  margin-left: 250px;
   transition: margin-left 0.5s ease;
 }
 
-#sidebar.show ~ #canvasContainer {
-  margin-left: 250px; /* zelfde breedte als sidebar */
-}
+/*#sidebar.show ~ #canvasContainer {
+  margin-left: 250px;} /* zelfde breedte als sidebar */
 
+
+/* Sidebar links vast */
 #sidebar {
+  position: fixed;
   top: 0;
-  left: 0;
-  width: 250px;       /* vaste breedte */
-  height: 100%;       /* volledige hoogte van het scherm */
-  overflow-y: auto;   /* scrollbaar indien inhoud te groot is */
+  left: 0;               /* links uitlijnen */
+  width: 250px;          /* vaste breedte */
+  height: 100%;
   background-color: #111;
   color: white;
-  transform: translateX(100%); /* begin buiten scherm */
-  transition: transform 0.5s ease; /* animatie */
-  z-index: 1000;
   padding: 16px;
-  display: none;
+  display: flex;
   flex-direction: column;
   gap: 10px;
-  flex-shrink: 0;
+  z-index: 1000;
+  overflow-y: auto;
+  /*transform: translateX(100%); /* begin buiten scherm */
+  /*transition: transform 0.5s ease; /* animatie */
 }
-
 
 #sidebar.show {
   display: flex;
@@ -106,19 +107,7 @@ button {
   transform: translateX(0); /* schuift volledig in beeld */
 }
 
-#sidebar {
-  position: fixed;
-  top: 0;
-  right: 0;
-  width: 300px;       /* vaste breedte */
-  height: 100%;       /* volledige hoogte van het scherm */
-  overflow-y: auto;   /* scrollbaar indien inhoud te groot is */
-  background-color: #111;
-  color: white;
-  transform: translateX(100%); /* begin buiten scherm */
-  transition: transform 0.5s ease; /* animatie */
-  z-index: 1000;
-}
+
 
 
 /* algemene sidebar buttons (sub-buttons) */
