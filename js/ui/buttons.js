@@ -76,6 +76,7 @@ sortByYearBtn.addEventListener("click", () => {
     let currentX = startX;
     years.forEach(year => {
         const column = grouped[year];
+        
         // label boven eerste bolletje
         if (column.length > 0) {
             column[0].yearLabelX = currentX;
