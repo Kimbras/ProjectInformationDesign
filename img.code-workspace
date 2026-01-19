@@ -1,0 +1,13 @@
+{
+	"folders": [
+		{
+			"path": "img"
+		},
+		{
+			"path": "."
+		}
+	],
+	"settings": {
+		"liveServer.settings.multiRootWorkspaceName": "Eerste opzet"
+	}
+}
