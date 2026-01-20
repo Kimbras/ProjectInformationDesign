@@ -467,7 +467,6 @@ function showInspiration() {
 document.getElementById("vanGoghBtn").addEventListener("click", showInspiration);
 
 function drawVanGogh() {
-  // achtergrondkleur of reset
   ctx.clearRect(0, 0, canvas.width, canvas.height);
 
   // eerst inspiratie-art tekenen
@@ -482,7 +481,7 @@ function drawVanGogh() {
 
       if (insp.x === undefined) {
         insp.x = 50 + Math.random() * (canvas.width - 200);
-        insp.y = 120 + Math.random() * 200;
+        insp.y = 50 + Math.random() * (canvas.height / 2);
       }
 
       ctx.drawImage(insp.imgObj, insp.x, insp.y, size, size);
@@ -512,10 +511,42 @@ function drawVanGogh() {
 
         ctx.drawImage(v.imgObj, v.x, v.y, 180, 140);
 
-        ctx.font = "14px Inter, Arial, sans-serif";
+        // titel
+        ctx.font = "bold 14px Inter, Arial, sans-serif";
         ctx.fillStyle = "white";
         ctx.textAlign = "center";
         ctx.fillText(v.title, v.x + 180 / 2, v.y + 140 + 18);
+
+        // toevoeging: inspiratiebeschrijving
+        const inspData = inspirationArt.find(i => i.id === v.inspirationId);
+        if (inspData && inspData.description) {
+          ctx.font = "13px Inter, Arial, sans-serif";
+          ctx.fillStyle = "#cccccc"; // iets subtieler
+          ctx.textAlign = "center";
+
+          // split description in meerdere regels als hij te lang is
+          const maxWidth = 180; // zelfde breedte als afbeelding
+          const words = inspData.description.split(" ");
+          let line = "";
+          let lines = [];
+          words.forEach(word => {
+            const testLine = line + word + " ";
+            const metrics = ctx.measureText(testLine);
+            if (metrics.width > maxWidth) {
+              lines.push(line);
+              line = word + " ";
+            } else {
+              line = testLine;
+            }
+          });
+          lines.push(line);
+
+          // teken alle lijnen onder de titel
+          const startY = v.y + 140 + 18 + 16; // afbeelding + titel + beetje marge
+          lines.forEach((lineText, idx) => {
+            ctx.fillText(lineText, v.x + 180 / 2, startY + idx * 16);
+          });
+        }
       }
     });
   }
@@ -527,10 +558,9 @@ function drawVanGogh() {
       ctx.strokeStyle = "rgba(255,255,255,0.3)";
       ctx.lineWidth = 2;
 
-      // gebruik x en y die je eerder aan de afbeeldingen hebt gegeven
-      const inspCenterX = insp.x + 120 / 2; // midden van inspiratie plaatje
+      const inspCenterX = insp.x + 120 / 2;
       const inspCenterY = insp.y + 120 / 2;
-      const vCenterX = v.x + 180 / 2;       // midden van Van Gogh plaatje
+      const vCenterX = v.x + 180 / 2;
       const vCenterY = v.y + 140 / 2;
 
       ctx.beginPath();
