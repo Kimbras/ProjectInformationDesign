@@ -194,20 +194,48 @@ const KLEUREN = [
 const LETTER_MARGIN = 50;
 
 const letters = [
-  { img: "img/brief-2juli1873.png" },
-  { img: "img/brief-3maart-1874.png" },
-  { img: "img/brief-3maart-1874I.png" },
-  { img: "img/brief-5mei1873.png" },
-  { img: "img/brief-7augustus1873.png" },
-  { img: "img/brief-7juli-1874-1r.png" },
-  { img: "img/brief-7juli-1874-1v.png" },
-  { img: "img/brief-7juli-1874-2r.png" },
-  { img: "img/brief-7juli-1874-3r.png" },
-  { img: "img/brief-7juli-1874-4r.png" },
-  { img: "img/brief-9feb-1874.png" },
-  { img: "img/brief-9feb-1874I.png" },
-  { img: "img/brief-9mei1873.png" },
-  { img: "img/brief-10juli-1874.png" }
+  { img: "img/brief-2juli1873.png", data: {
+      omschrijving: "iedereen vond van gogh niks",
+    }},
+  { img: "img/brief-3maart-1874.png", data: {
+      omschrijving: "iedereen vond van gogh niks",
+    }}, 
+  { img: "img/brief-3maart-1874I.png" , data: {
+      omschrijving: "iedereen vond van gogh niks",
+    }},
+  { img: "img/brief-5mei1873.png" , data: {
+      omschrijving: "iedereen vond van gogh niks",
+    }},
+  { img: "img/brief-7augustus1873.png" , data: {
+      omschrijving: "iedereen vond van gogh niks",
+    }},
+  { img: "img/brief-7juli-1874-1r.png", data: {
+      omschrijving: "iedereen vond van gogh niks",
+    }},
+  { img: "img/brief-7juli-1874-1v.png", data: {
+      omschrijving: "iedereen vond van gogh niks",
+    }},
+  { img: "img/brief-7juli-1874-2r.png" , data: {
+      omschrijving: "iedereen vond van gogh niks",
+    }},
+  { img: "img/brief-7juli-1874-3r.png" , data: {
+      omschrijving: "iedereen vond van gogh niks",
+    }},
+  { img: "img/brief-7juli-1874-4r.png" , data: {
+      omschrijving: "iedereen vond van gogh niks",
+    }},
+  { img: "img/brief-9feb-1874.png", data: {
+      omschrijving: "iedereen vond van gogh niks",
+    }},
+  { img: "img/brief-9feb-1874I.png", data: {
+      omschrijving: "iedereen vond van gogh niks",
+    }},
+  { img: "img/brief-9mei1873.png", data: {
+      omschrijving: "iedereen vond van gogh niks",
+    }},
+  { img: "img/brief-10juli-1874.png" , data: {
+      omschrijving: "iedereen vond van gogh niks",
+    }},
 ].map(l => ({
   ...l,
   x: Math.random() * canvas.width,
@@ -315,16 +343,17 @@ function drawLetters() {
     }
   });
 
-  // vergroot actieve letter tekenen
+  // vergroot actieve letter tekenen + tekst
   if (activeLetter && now - activeLetterTime < ACTIVE_DISPLAY_DURATION) {
     const img = activeLetter.imgObj;
     if (img && img.complete) {
-      const scale = 2; // verdubbel de grootte
+      const scale = 2.6;
       const w = 140 * scale;
       const h = 180 * scale;
       const x = (cw() - w) / 2;
       const y = (ch() - h) / 2;
 
+      // afbeelding tekenen
       ctx.save();
       ctx.shadowColor = "rgba(0,0,0,0.5)";
       ctx.shadowBlur = 30;
@@ -332,10 +361,42 @@ function drawLetters() {
       ctx.shadowOffsetY = 20;
       ctx.drawImage(img, x, y, w, h);
       ctx.restore();
+
+      // tekst tekenen
+  
+      ctx.save();
+      ctx.font = "500 28px Inter, Arial, sans-serif";
+      ctx.fillStyle = "white";
+      ctx.textAlign = "center";
+      ctx.textBaseline = "top";
+
+      const textX = cw() / 2; 
+      const textY = y + h + 4; // 8 pixels onder de afbeelding (minder dan 20)
+
+      
+// de omschrijving en andere info
+    const info = activeLetter.data;
+    const text = info.omschrijving || "";
+    const lines = [
+    info.title || "",
+    info.date || info.year || "",
+    info.madeIn || "",
+    info.currentLocation || "",
+    info.omschrijving || ""
+  ].filter(line => line); // lege regels eruit
+
+  const lineHeight = 22; // ← verkleind van 28px, compactere tekst
+  const padding = 15;
+
+
+lines.forEach((line, i) => {
+  ctx.fillText(line, cw() / 2, textY + i * lineHeight);
+});
+
+ctx.restore();
     }
   } else {
-    // reset activeLetter als de tijd voorbij is
-    activeLetter = null;
+    activeLetter = null; // reset na tijd
   }
 }
 
