@@ -6,8 +6,30 @@ const canvas = document.getElementById("canvas");
 const ctx = canvas.getContext("2d");
 const imageCache = {};
 
+let mode = "paintings"; // startmodus
+
+document.getElementById("showPaintingsBtn").addEventListener("click", () => {
+  mode = "paintings"; // terug naar bolletjes schilderijen
+});
+
+document.getElementById("showLettersBtn").addEventListener("click", () => {
+    mode = "letters";
+
+    // Bolletjes “uitzetten”
+    bolletjes.forEach(b => b.target = null);
+});
+
+
+// Knoppen referenties
+
+const paintingsBtn = document.getElementById("paintingsBtn");
+const yearBtn = document.getElementById("yearBtn");
+const madeInBtn = document.getElementById("madeInBtn");
+const currentLocationBtn = document.getElementById("currentLocationBtn");
+
 let clusterLabels = [];
-let mode = "letters";
+
+
 
 
 const dpr = window.devicePixelRatio || 1;
@@ -144,7 +166,120 @@ const KLEUREN = [
 ];
 
 /* =====================
-   DATA (VOORBEELD)
+   DATA (brieven)
+===================== */
+
+const letters = [
+  { img: "img/brief-2juli1873.png" },
+  { img: "img/brief-3maart-1874.png" },
+  { img: "img/brief-3maart-1874I.png" },
+  { img: "img/brief-5mei1873.png" },
+  { img: "img/brief-7augustus1873.png" },
+  { img: "img/brief-7juli-1874-1r.png" },
+  { img: "img/brief-7juli-1874-1v.png" },
+  { img: "img/brief-7juli-1874-2r.png" },
+  { img: "img/brief-7juli-1874-3r.png" },
+  { img: "img/brief-7juli-1874-4r.png" },
+  { img: "img/brief-9feb-1874.png" },
+  { img: "img/brief-9feb-1874I.png" },
+  { img: "img/brief-9mei1873.png" },
+  { img: "img/brief-10juli-1874.png" }
+];
+
+/* =====================
+   maken (brieven)
+===================== */
+function draw() {
+  ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+  if (mode === "paintings") {
+    drawPaintings();
+
+    ctx.font = "15px Inter, Arial, sans-serif";
+    ctx.fillStyle = "white";
+    ctx.textAlign = "center";
+    ctx.textBaseline = "bottom";
+
+    clusterLabels.forEach(label => {
+      ctx.fillText(label.text, label.x, label.y);
+    });
+
+    drawHoverInfo(); // 👈 hover blijft werken
+  }
+
+  if (mode === "letters") {
+    drawLetters();   // 👈 HIER verschijnen je brieven
+  }
+
+  requestAnimationFrame(draw);
+}
+
+
+// aparte tekenfuncties
+
+function drawPaintings() {
+  bolletjes.forEach(b => {
+    b.floatPhase += b.floatSpeed;
+
+    const ox = Math.cos(b.floatPhase) * b.floatAmount;
+    const oy = Math.sin(b.floatPhase) * b.floatAmount;
+
+    const tx = b.target ? b.target.x : b.homeX;
+    const ty = b.target ? b.target.y : b.homeY;
+
+    b.x += (tx + ox - b.x) * 0.05;
+    b.y += (ty + oy - b.y) * 0.05;
+
+    ctx.beginPath();
+    ctx.arc(b.x, b.y, b.r, 0, Math.PI * 2);
+    ctx.fillStyle = b.color;
+    ctx.fill();
+  });
+}
+
+// brieven tekenen 
+function drawLetters() {
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+    letters.forEach((l, i) => {
+        if (!l.imgObj) {
+            l.imgObj = new Image();
+            l.imgObj.src = l.img;
+            l.imgObj.onload = () => drawLetters(); // herteken zodra geladen
+            return;
+        }
+
+        const x = canvas.width / 2 + (i % 5) * 150 - 300;
+        const y = 100 + Math.floor(i / 5) * 200;
+
+        ctx.drawImage(l.imgObj, x, y, 140, 180);
+    });
+}
+
+
+function VanGogh() {
+  mode = "letters";
+  clusterLabels = [];
+  bolletjes.forEach(b => b.target = null);
+  console.log("VanGogh functie uitgevoerd!");
+}
+
+
+
+function resizeCanvas() {
+  canvas.width = window.innerWidth - (sidebar?.offsetWidth || 0);
+  canvas.height = window.innerHeight;
+}
+
+letters.forEach(l => {
+  const img = new Image();
+  img.src = l.img;
+  img.onload = () => console.log(`Afbeelding geladen: ${l.img}`);
+});
+
+
+/* =====================
+   DATA (schilderijen)
 ===================== */
 const paintings = [
   {
@@ -1445,132 +1580,112 @@ function getHoveredBolletje() {
   );
 }
 
-function draw() {
-  ctx.clearRect(0, 0, canvas.width, canvas.height);
-  
+function drawBolletjes() {
+  bolletjes.forEach(b => {
+    b.floatPhase += b.floatSpeed;
 
-  // 🔵 Bolletjes tekenen
- bolletjes.forEach(b => {
-  b.floatPhase += b.floatSpeed;
+    const ox = Math.cos(b.floatPhase) * b.floatAmount;
+    const oy = Math.sin(b.floatPhase) * b.floatAmount;
 
-  const ox = Math.cos(b.floatPhase) * b.floatAmount;
-  const oy = Math.sin(b.floatPhase) * b.floatAmount;
+    const tx = b.target ? b.target.x : b.homeX;
+    const ty = b.target ? b.target.y : b.homeY;
 
-  // vrije staat
-  const tx = b.target ? b.target.x : b.homeX;
-  const ty = b.target ? b.target.y : b.homeY;
+    b.x += (tx + ox - b.x) * 0.05;
+    b.y += (ty + oy - b.y) * 0.05;
 
-  b.x += (tx + ox - b.x) * 0.05;
-  b.y += (ty + oy - b.y) * 0.05;
-
-  ctx.beginPath();
-  ctx.arc(b.x, b.y, b.r, 0, Math.PI * 2);
-  ctx.fillStyle = b.color;
-  ctx.fill();
+    ctx.beginPath();
+    ctx.arc(b.x, b.y, b.r, 0, Math.PI * 2);
+    ctx.fillStyle = b.color;
+    ctx.fill();
+  });
 
   ctx.font = "15px sans-serif";
-ctx.fillStyle = "white";
-ctx.textAlign = "center";
-ctx.textBaseline = "bottom";
+  ctx.fillStyle = "white";
+  ctx.textAlign = "center";
+  ctx.textBaseline = "bottom";
 
-clusterLabels.forEach(label => {
-  ctx.fillText(label.text, Math.round(label.x) + 0.5,
-    Math.round(label.y) + 0.5);
-});
-
-});
-
-
-  // HOVER INFO + AFBEELDING
-  const imageTextSpacing = 12; // 👈 pas dit aan naar smaak (8–20 is nice)
-  const hovered = getHoveredBolletje();
-  if (hovered) {
-    const info = hovered.data;
-
-    const lines = [
-      info.title,
-      `Jaar: ${info.year}`,
-      `Gemaakt in: ${info.madeIn}`,
-      `Museum: ${info.currentLocation}`,
-      `Afmetingen: ${info.height} × ${info.width} cm`
-    ];
-
-ctx.font = "500 16px Inter, Arial, sans-serif";
-ctx.textAlign = "center";
-ctx.textBaseline = "middle";
-ctx.fillStyle = "#ffffff";
-
-
-    const padding = 8;
-    const lineHeight = 18;
-    const imageWidth = 120;
-    const imageHeight = 80;
-
-    const textWidth = Math.max(
-      ...lines.map(l => ctx.measureText(l).width)
-    );
-
-  const boxWidth = Math.max(imageWidth, textWidth) + padding * 2;
-
-const boxHeight =
-  imageHeight +
-  imageTextSpacing +
-  lines.length * lineHeight +
-  padding * 3;
-
-
-
-    let x = hovered.x + hovered.r + 12;
-    let y = hovered.y - boxHeight / 2;
-
-    // binnen canvas houden
-    if (x + boxWidth > canvas.width) x = hovered.x - boxWidth - 12;
-    if (y < 10) y = 10;
-    if (y + boxHeight > canvas.height)
-      y = canvas.height - boxHeight - 10;
-
-    // achtergrond
-    ctx.fillStyle = "rgba(0,0,0,0.75)";
-    ctx.fillRect(x, y, boxWidth, boxHeight);
-
-    // tekst
-    ctx.fillStyle = "white";
-    lines.forEach((line, i) => {
+  clusterLabels.forEach(label => {
     ctx.fillText(
-    line,
-    x + boxWidth / 2,
-    y + padding * 2 + imageHeight + imageTextSpacing + i * lineHeight
-
-  );
-});
-
-
-    //  afbeelding
-    if (info.image) {
-      if (!imageCache[info.image]) {
-        const img = new Image();
-        img.src = info.image;
-        imageCache[info.image] = img;
-      }
-
-      const img = imageCache[info.image];
-      if (img.complete) {
-       ctx.drawImage(
-     img,
-      x + (boxWidth - imageWidth) / 2,
-      y + padding,
-       imageWidth,
-       imageHeight
-);
-
-      }
-    }
-  }
-
-  requestAnimationFrame(draw);
+      label.text,
+      Math.round(label.x) + 0.5,
+      Math.round(label.y) + 0.5
+    );
+  });
 }
 
-draw();
+function drawHoverInfo() {
+  const hovered = getHoveredBolletje();
+  if (!hovered) return;
+
+  const info = hovered.data;
+
+  const lines = [
+    info.title,
+    `Jaar: ${info.year}`,
+    `Gemaakt in: ${info.madeIn}`,
+    `Museum: ${info.currentLocation}`,
+    `Afmetingen: ${info.height} × ${info.width} cm`
+  ];
+
+  const padding = 8;
+  const lineHeight = 18;
+  const imageWidth = 120;
+  const imageHeight = 80;
+  const imageTextSpacing = 12;
+
+  ctx.font = "500 16px Inter, Arial, sans-serif";
+  ctx.textAlign = "center";
+  ctx.textBaseline = "middle";
+  ctx.fillStyle = "#ffffff";
+
+  const textWidth = Math.max(...lines.map(l => ctx.measureText(l).width));
+  const boxWidth = Math.max(imageWidth, textWidth) + padding * 2;
+  const boxHeight =
+    imageHeight +
+    imageTextSpacing +
+    lines.length * lineHeight +
+    padding * 3;
+
+  let x = hovered.x + hovered.r + 12;
+  let y = hovered.y - boxHeight / 2;
+
+  if (x + boxWidth > canvas.width) x = hovered.x - boxWidth - 12;
+  if (y < 10) y = 10;
+  if (y + boxHeight > canvas.height)
+    y = canvas.height - boxHeight - 10;
+
+  ctx.fillStyle = "rgba(0,0,0,0.75)";
+  ctx.fillRect(x, y, boxWidth, boxHeight);
+
+  ctx.fillStyle = "white";
+  lines.forEach((line, i) => {
+    ctx.fillText(
+      line,
+      x + boxWidth / 2,
+      y + padding * 2 + imageHeight + imageTextSpacing + i * lineHeight
+    );
+  });
+
+  if (info.image) {
+    if (!imageCache[info.image]) {
+      const img = new Image();
+      img.src = info.image;
+      imageCache[info.image] = img;
+    }
+
+    const img = imageCache[info.image];
+    if (img.complete) {
+      ctx.drawImage(
+        img,
+        x + (boxWidth - imageWidth) / 2,
+        y + padding,
+        imageWidth,
+        imageHeight
+      );
+    }
+  }
+}
+
 
 
 // Na 1 minuut alle bolletjes terug naar vrije staat
@@ -1680,5 +1795,7 @@ function manualClickHandler() {
 
 // Start automatisch afspelen
 showStoryText(storyIndex);
+
+draw(); // onderaan je script
 
 
