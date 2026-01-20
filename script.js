@@ -7,20 +7,37 @@ const ctx = canvas.getContext("2d");
 const imageCache = {};
 
 let mode = "paintings"; // startmodus
+
+function switchToPaintings() {
+  mode = "paintings";
+  activeLetter = null;
+  activeInspiration = null;
+}
+
 let activeLetter = null;   // de letter die vergroot wordt weergegeven
+let activeInspiration = null;
 let activeLetterTime = 0;  // wanneer deze is aangeklikt
 const ACTIVE_DISPLAY_DURATION = 2000; // 2 seconden
 
 document.getElementById("showPaintingsBtn").addEventListener("click", () => {
-  mode = "paintings"; // terug naar bolletjes schilderijen
+  mode = "paintings";
+  activeLetter = null;
+  activeInspiration = null;
 });
 
 document.getElementById("showLettersBtn").addEventListener("click", () => {
-    mode = "letters";
-
-    // Bolletjes “uitzetten”
-    bolletjes.forEach(b => b.target = null);
+  mode = "letters";
+  activeInspiration = null;
+  activeLetter = null;
 });
+
+document.getElementById("vanGoghBtn").addEventListener("click", () => {
+  mode = "vanGogh";
+  activeLetter = null;
+  activeInspiration = null;
+  clusterLabels = [];
+});
+
 
 
 // Knoppen referenties
@@ -60,24 +77,8 @@ canvas.addEventListener("mousemove", (e) => {
   mouse.y = e.clientY - rect.top;
 });
 
-canvas.addEventListener("click", () => {
-  for (const l of letters) {
-    const width = 140;
-    const height = 180;
 
-    // check of klik binnen het letterblok valt
-    if (
-      mouse.x >= l.x &&
-      mouse.x <= l.x + width &&
-      mouse.y >= l.y &&
-      mouse.y <= l.y + height
-    ) {
-      activeLetter = l;
-      activeLetterTime = performance.now();
-      break;
-    }
-  }
-});
+
 
 const MARGIN = 30;
 
@@ -235,7 +236,7 @@ const letters = [
     }},
   { img: "img/brief-10juli-1874.png" , data: {
       omschrijving: "iedereen vond van gogh niks",
-    }},
+    }}
 ].map(l => ({
   ...l,
   x: Math.random() * canvas.width,
@@ -272,20 +273,24 @@ function draw() {
     ctx.textAlign = "center";
     ctx.textBaseline = "bottom";
 
-    
     clusterLabels.forEach(label => {
       ctx.fillText(label.text, label.x, label.y);
     });
 
-    drawHoverInfo(); // 👈 hover blijft werken
+    drawHoverInfo(); // hover info blijft werken
   }
 
   if (mode === "letters") {
-    drawLetters();   // 👈 HIER verschijnen je brieven
+    drawLetters();   // brieven
+  }
+
+  if (mode === "vanGogh") {
+    drawVanGogh();   // Van Gogh inspiratie view
   }
 
   requestAnimationFrame(draw);
 }
+
 
 
 // aparte tekenfuncties
@@ -424,6 +429,181 @@ letters.forEach(l => {
     l.lastTargetChange = performance.now();
   }
 });
+
+/* =====================
+   DATA (schilderijen inspiratie)
+===================== */
+// Inspiratie kunstwerken
+const inspirationArt = [
+  { id: 1, name: "Plum Park in Kameido", artist: "Hiroshige", description: "Van Gogh kopieerde de kunstwerken van Hiroshige omdat hij dit ook wil maken", img: "https://en.wikipedia.org/wiki/File:De_pruimenboomgaard_te_Kameido-Rijksmuseum_RP-P-1956-743.jpeg" },
+  { id: 2, name: "Evening Shower at Atake", artist: "Hiroshige", description: "Van Gogh kopieerde de kunstwerken van Hiroshige omdat hij dit ook wil maken", img: "https://en.wikipedia.org/wiki/File:Hiroshige_-_Evening_Shower_at_Atake_and_the_Great_Bridge.jpg" },
+  { id: 3, name: "Collection of New Ukiyoe Style Beauties", artist: "Kondo shiun", description: "Bij dit schilderij worden de felle platte vlakken overgenomen als inspiratie. Dit is veel voorkomend in Ukiyo-e kunst. Ook inspireerde Japanese kunst om zichzelf te tekenen als een boedistische monnik", img: "https://data.ukiyo-e.org/artelino/images/12444g1.jpg" },
+  { id: 4, name: "Courtisan", artist: "Keisai Eisen", description: "Van Gogh kopieerde de kunstwerken van Eisen om hiervan te leren en dit ook te kunnen", img: "https://uitdekunstmarina.nl/wp-content/uploads/2018/05/13.Keisai-Eisen-Courtisane-1.jpg" },
+  { id: 5, name: "Branch", artist: "Katsushika Hokusai", description: "Van Gogh deed veel inspiratie van Hokusai. Hier is het (Omhoog kijken) typisch Hokusai. Ook is een gedeelte van iets tekenen dus hier een tak van een boom erg Ukiyo-e", img: "https://arthive.com/res/media/img/oy800/work/cea/182736@2x.webp" },
+  { id: 6, name: "Kiribatake", artist: "Hiroshige", description: "Hier nam Van Gogh inspiratie op van afgehakte bovenkant. Bomen staan er niet compleet op", img: "https://www.scholten-japanese-art.com/artistimages/10-5547w.jpg" }
+];
+
+// Van Gogh kunstwerken
+const vanGoghArt = [
+  { id: 1, title: "De bloeiende pruimenboom (naar Hiroshige)", year: 1887, location: "Parijs", museum: "Van Gogh Museum", size: "34 x 55", img: "https://data.spinque.com/iiif/2/vangoghworldwide%2Fvgm%2Fs0115V1962_gb.jpg/full/!682,440/0/default.jpg", inspirationId: 1 },
+  { id: 2, title: "Liggende koe", year: 1883, location: "Den Haag", museum: "Private collection", size: "30 x 50", img: "https://data.spinque.com/iiif/2/vangoghworldwide%2Fdavidbrooks%2Ffull%2FF0001b_x01.jpg/full/!995,642/0/default.jpg", inspirationId: 1 },
+  { id: 3, title: "Strand en zee", year: 1882, location: "Den Haag", museum: "Metropolitan Museum of Art", size: "19 x 47.5", img: "https://data.spinque.com/iiif/2/vangoghworldwide%2Fdavidbrooks%2Ffull%2FF0002_x01.jpg/full/!995,642/0/default.jpg", inspirationId: 1 },
+  { id: 4, title: "De brug in de regen (naar Hiroshige)", year: 1887, location: "Parijs", museum: "Van Gogh Museum", size: "35.5 x 49.5", img: "https://data.spinque.com/iiif/2/vangoghworldwide%2Fvgm%2Fs0114V1962_gb.jpg/full/!682,440/0/default.jpg", inspirationId: 2 },
+  { id: 5, title: "Zelfportret", year: 1888, location: "Arles", museum: "Harvard Art Museums/Fogg Museum", size: "36 x 58.5", img: "https://data.spinque.com/iiif/2/vangoghworldwide%2Fdavidbrooks%2Ffull%2FF0476_x01.jpg/full/!682,440/0/default.jpg", inspirationId: 3 },
+  { id: 6, title: "De courtisane (naar Eisen)", year: 1887, location: "Parijs", museum: "Van Gogh Museum", size: "24 x 32", img: "https://upload.wikimedia.org/wikipedia/commons/b/b3/Courtisane_%28naar_Eisen%29_-_s0116V1962_-_Van_Gogh_Museum.jpg", inspirationId: 4 },
+  { id: 7, title: "Amandelbloesem", year: 1890, location: "Saint-Rémy", museum: "Van Gogh Museum", size: "34.5 x 51", img: "https://www.cultuurblogger.nl/wp-content/uploads/2018/03/vangoghmuseum-s0176V1962-800-Small.jpg", inspirationId: 5 },
+  { id: 8, title: "Kreupelhout met twee figuren", year: 1887, location: "Auvers-sur-Oise", museum: "Van Gogh Museum", size: "51.1 x 32.8", img: "https://www.cultuurblogger.nl/wp-content/uploads/2018/03/unnamed-11-Small.jpg", inspirationId: 6 }
+];
+
+/* =====================
+   inspiratie van van gogh
+===================== */
+function showInspiration() {
+  mode = "vanGogh";
+  activeInspiration = null;
+  console.log("showInspiration aangeroepen");
+}
+
+document.getElementById("vanGoghBtn").addEventListener("click", showInspiration);
+
+function drawVanGogh() {
+  // achtergrondkleur of reset
+  ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+  // eerst inspiratie-art tekenen
+  inspirationArt.forEach(insp => {
+    if (!insp.imgObj) {
+      insp.imgObj = new Image();
+      insp.imgObj.src = insp.img;
+    }
+
+    if (insp.imgObj.complete && insp.imgObj.naturalWidth > 0) {
+      const size = 120;
+
+      if (insp.x === undefined) {
+        insp.x = 50 + Math.random() * (canvas.width - 200);
+        insp.y = 120 + Math.random() * 200;
+      }
+
+      ctx.drawImage(insp.imgObj, insp.x, insp.y, size, size);
+    }
+  });
+
+  // Van Gogh kunstwerken tekenen
+  if (activeInspiration) {
+    const related = vanGoghArt.filter(
+      v => v.inspirationId === activeInspiration.id
+    );
+
+    related.forEach((v, i) => {
+      if (!v.imgObj) {
+        v.imgObj = new Image();
+        v.imgObj.src = v.img;
+      }
+
+      if (v.imgObj.complete && v.imgObj.naturalWidth > 0) {
+        // positie van Van Gogh schilderij
+        if (v.x === undefined) {
+          const w = 180;
+          const h = 140;
+          v.x = 150 + i * (w + 20);
+          v.y = 380;
+        }
+
+        ctx.drawImage(v.imgObj, v.x, v.y, 180, 140);
+
+        ctx.font = "14px Inter, Arial, sans-serif";
+        ctx.fillStyle = "white";
+        ctx.textAlign = "center";
+        ctx.fillText(v.title, v.x + 180 / 2, v.y + 140 + 18);
+      }
+    });
+  }
+
+  // Lijnen tekenen van inspiratie naar Van Gogh
+  vanGoghArt.forEach(v => {
+    const insp = inspirationArt.find(i => i.id === v.inspirationId);
+    if (insp && insp.imgObj && v.imgObj) {
+      ctx.strokeStyle = "rgba(255,255,255,0.3)";
+      ctx.lineWidth = 2;
+
+      // gebruik x en y die je eerder aan de afbeeldingen hebt gegeven
+      const inspCenterX = insp.x + 120 / 2; // midden van inspiratie plaatje
+      const inspCenterY = insp.y + 120 / 2;
+      const vCenterX = v.x + 180 / 2;       // midden van Van Gogh plaatje
+      const vCenterY = v.y + 140 / 2;
+
+      ctx.beginPath();
+      ctx.moveTo(inspCenterX, inspCenterY);
+      ctx.lineTo(vCenterX, vCenterY);
+      ctx.stroke();
+    }
+  });
+}
+
+
+
+
+
+
+canvas.addEventListener("click", () => {
+  // Letters mode
+  if (mode === "letters") {
+    for (const l of letters) {
+      const width = 140;
+      const height = 180;
+      if (
+        mouse.x >= l.x &&
+        mouse.x <= l.x + width &&
+        mouse.y >= l.y &&
+        mouse.y <= l.y + height
+      ) {
+        activeLetter = l;
+        activeLetterTime = performance.now();
+        activeInspiration = null; // reset Van Gogh
+        break;
+      }
+    }
+    return;
+  }
+
+  // Van Gogh inspiratie mode
+  if (mode === "vanGogh") {
+    for (const insp of inspirationArt) {
+      const size = 120;
+      if (
+        mouse.x >= insp.x &&
+        mouse.x <= insp.x + size &&
+        mouse.y >= insp.y &&
+        mouse.y <= insp.y + size
+      ) {
+        activeInspiration = insp;
+        activeLetter = null; // reset letters
+        break;
+      }
+    }
+    return;
+  }
+
+  // Paintings mode (optioneel)
+  if (mode === "paintings") {
+    // Hier kun je clicks op paintings afhandelen
+    // b.v. bolletjes aanklikken
+  }
+});
+
+
+function loadImage(obj, key = "imgObj") {
+  if (obj[key]) return;
+
+  const img = new Image();
+  img.src = obj.img;
+  img.onerror = () => {
+    console.warn("Image failed:", obj.img);
+  };
+  obj[key] = img;
+}
+
 
 
 
@@ -1669,6 +1849,7 @@ function sortByYear() {
     b.target = { x, y };
   });
 }
+
 
 
 
