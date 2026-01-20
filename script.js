@@ -168,7 +168,7 @@ const KLEUREN = [
 /* =====================
    DATA (brieven)
 ===================== */
-const LETTER_MARGIN = 120;
+const LETTER_MARGIN = 50;
 
 const letters = [
   { img: "img/brief-2juli1873.png" },
@@ -189,10 +189,15 @@ const letters = [
   ...l,
   x: Math.random() * canvas.width,
   y: Math.random() * canvas.height,
+  
+  // Doelen waar ze naartoe moeten bewegen
   targetX: LETTER_MARGIN + Math.random() * (cw() - LETTER_MARGIN * 2),
-targetY: LETTER_MARGIN + Math.random() * (ch() - LETTER_MARGIN * 2),
-  floatPhase: Math.random() * Math.PI * 2,
-  floatSpeed: 0.008 + Math.random() * 0.01
+  targetY: LETTER_MARGIN + Math.random() * (ch() - LETTER_MARGIN * 2),
+  
+  // Snelheid
+  moveSpeed: 0.02,   // vaste snelheid
+  lastTargetChange: performance.now(),
+  changeTargetInterval: 4000 // interval voor target update
 }));
 /* =====================
    maken (brieven)
@@ -216,6 +221,7 @@ function draw() {
     ctx.textAlign = "center";
     ctx.textBaseline = "bottom";
 
+    
     clusterLabels.forEach(label => {
       ctx.fillText(label.text, label.x, label.y);
     });
@@ -261,27 +267,31 @@ function drawLetters() {
       l.imgObj.src = l.img;
     }
 
-    // schaduw instellingen
-  ctx.save();
-  ctx.shadowColor = "rgba(0, 0, 0, 0.35)";
-  ctx.shadowBlur = 25;
-  ctx.shadowOffsetX = 0;
-  ctx.shadowOffsetY = 12;
+    //  nieuwe targets updaten
+    if (performance.now() - l.lastTargetChange > l.changeTargetInterval) {
+      l.targetX = LETTER_MARGIN + Math.random() * (cw() - LETTER_MARGIN * 2);
+      l.targetY = LETTER_MARGIN + Math.random() * (ch() - LETTER_MARGIN * 2);
+      l.lastTargetChange = performance.now();
+    }
 
+    ctx.save();
+    ctx.shadowColor = "rgba(0, 0, 0, 0.35)";
+    ctx.shadowBlur = 25;
+    ctx.shadowOffsetX = 0;
+    ctx.shadowOffsetY = 12;
 
-    l.floatPhase += l.floatSpeed;
-
-    const ox = Math.cos(l.floatPhase) * 6;
-    const oy = Math.sin(l.floatPhase) * 6;
-
-    l.x += (l.targetX + ox - l.x) * 0.05;
-    l.y += (l.targetY + oy - l.y) * 0.05;
+    // lineair bewegen naar target
+    l.x += (l.targetX - l.x) * l.moveSpeed;
+    l.y += (l.targetY - l.y) * l.moveSpeed;
 
     if (l.imgObj.complete) {
       ctx.drawImage(l.imgObj, l.x, l.y, 140, 180);
     }
+
+    ctx.restore();
   });
 }
+
 
 
 function VanGogh() {
@@ -299,10 +309,13 @@ function resizeCanvas() {
 }
 
 letters.forEach(l => {
-  const img = new Image();
-  img.src = l.img;
-  img.onload = () => console.log(`Afbeelding geladen: ${l.img}`);
+  if (performance.now() - l.lastTargetChange > l.changeTargetInterval) {
+    l.targetX = LETTER_MARGIN + Math.random() * (cw() - LETTER_MARGIN * 2);
+    l.targetY = LETTER_MARGIN + Math.random() * (ch() - LETTER_MARGIN * 2);
+    l.lastTargetChange = performance.now();
+  }
 });
+
 
 
 /* =====================
