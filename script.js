@@ -7,6 +7,9 @@ const ctx = canvas.getContext("2d");
 const imageCache = {};
 
 let mode = "paintings"; // startmodus
+let activeLetter = null;   // de letter die vergroot wordt weergegeven
+let activeLetterTime = 0;  // wanneer deze is aangeklikt
+const ACTIVE_DISPLAY_DURATION = 2000; // 2 seconden
 
 document.getElementById("showPaintingsBtn").addEventListener("click", () => {
   mode = "paintings"; // terug naar bolletjes schilderijen
@@ -50,10 +53,30 @@ resize();
 
 const mouse = { x: 0, y: 0 };
 
+
 canvas.addEventListener("mousemove", (e) => {
   const rect = canvas.getBoundingClientRect();
   mouse.x = e.clientX - rect.left;
   mouse.y = e.clientY - rect.top;
+});
+
+canvas.addEventListener("click", () => {
+  for (const l of letters) {
+    const width = 140;
+    const height = 180;
+
+    // check of klik binnen het letterblok valt
+    if (
+      mouse.x >= l.x &&
+      mouse.x <= l.x + width &&
+      mouse.y >= l.y &&
+      mouse.y <= l.y + height
+    ) {
+      activeLetter = l;
+      activeLetterTime = performance.now();
+      break;
+    }
+  }
 });
 
 const MARGIN = 30;
@@ -261,36 +284,61 @@ function drawPaintings() {
 
 // brieven tekenen 
 function drawLetters() {
+  const now = performance.now();
+
   letters.forEach(l => {
     if (!l.imgObj) {
       l.imgObj = new Image();
       l.imgObj.src = l.img;
     }
 
-    //  nieuwe targets updaten
-    if (performance.now() - l.lastTargetChange > l.changeTargetInterval) {
+    // update nieuwe targets
+    if (now - l.lastTargetChange > l.changeTargetInterval) {
       l.targetX = LETTER_MARGIN + Math.random() * (cw() - LETTER_MARGIN * 2);
       l.targetY = LETTER_MARGIN + Math.random() * (ch() - LETTER_MARGIN * 2);
-      l.lastTargetChange = performance.now();
+      l.lastTargetChange = now;
     }
-
-    ctx.save();
-    ctx.shadowColor = "rgba(0, 0, 0, 0.35)";
-    ctx.shadowBlur = 25;
-    ctx.shadowOffsetX = 0;
-    ctx.shadowOffsetY = 12;
 
     // lineair bewegen naar target
     l.x += (l.targetX - l.x) * l.moveSpeed;
     l.y += (l.targetY - l.y) * l.moveSpeed;
 
     if (l.imgObj.complete) {
+      // normale letters
+      ctx.save();
+      ctx.shadowColor = "rgba(0,0,0,0.35)";
+      ctx.shadowBlur = 15;
+      ctx.shadowOffsetX = 0;
+      ctx.shadowOffsetY = 8;
       ctx.drawImage(l.imgObj, l.x, l.y, 140, 180);
+      ctx.restore();
     }
-
-    ctx.restore();
   });
+
+  // vergroot actieve letter tekenen
+  if (activeLetter && now - activeLetterTime < ACTIVE_DISPLAY_DURATION) {
+    const img = activeLetter.imgObj;
+    if (img && img.complete) {
+      const scale = 2; // verdubbel de grootte
+      const w = 140 * scale;
+      const h = 180 * scale;
+      const x = (cw() - w) / 2;
+      const y = (ch() - h) / 2;
+
+      ctx.save();
+      ctx.shadowColor = "rgba(0,0,0,0.5)";
+      ctx.shadowBlur = 30;
+      ctx.shadowOffsetX = 0;
+      ctx.shadowOffsetY = 20;
+      ctx.drawImage(img, x, y, w, h);
+      ctx.restore();
+    }
+  } else {
+    // reset activeLetter als de tijd voorbij is
+    activeLetter = null;
+  }
 }
+
 
 
 
