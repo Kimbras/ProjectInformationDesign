@@ -168,6 +168,7 @@ const KLEUREN = [
 /* =====================
    DATA (brieven)
 ===================== */
+const LETTER_MARGIN = 120;
 
 const letters = [
   { img: "img/brief-2juli1873.png" },
@@ -184,11 +185,26 @@ const letters = [
   { img: "img/brief-9feb-1874I.png" },
   { img: "img/brief-9mei1873.png" },
   { img: "img/brief-10juli-1874.png" }
-];
-
+].map(l => ({
+  ...l,
+  x: Math.random() * canvas.width,
+  y: Math.random() * canvas.height,
+  targetX: LETTER_MARGIN + Math.random() * (cw() - LETTER_MARGIN * 2),
+targetY: LETTER_MARGIN + Math.random() * (ch() - LETTER_MARGIN * 2),
+  floatPhase: Math.random() * Math.PI * 2,
+  floatSpeed: 0.008 + Math.random() * 0.01
+}));
 /* =====================
    maken (brieven)
 ===================== */
+function cw() {
+  return canvas.clientWidth;
+}
+
+function ch() {
+  return canvas.clientHeight;
+}
+
 function draw() {
   ctx.clearRect(0, 0, canvas.width, canvas.height);
 
@@ -239,21 +255,32 @@ function drawPaintings() {
 
 // brieven tekenen 
 function drawLetters() {
-    ctx.clearRect(0, 0, canvas.width, canvas.height);
+  letters.forEach(l => {
+    if (!l.imgObj) {
+      l.imgObj = new Image();
+      l.imgObj.src = l.img;
+    }
 
-    letters.forEach((l, i) => {
-        if (!l.imgObj) {
-            l.imgObj = new Image();
-            l.imgObj.src = l.img;
-            l.imgObj.onload = () => drawLetters(); // herteken zodra geladen
-            return;
-        }
+    // schaduw instellingen
+  ctx.save();
+  ctx.shadowColor = "rgba(0, 0, 0, 0.35)";
+  ctx.shadowBlur = 25;
+  ctx.shadowOffsetX = 0;
+  ctx.shadowOffsetY = 12;
 
-        const x = canvas.width / 2 + (i % 5) * 150 - 300;
-        const y = 100 + Math.floor(i / 5) * 200;
 
-        ctx.drawImage(l.imgObj, x, y, 140, 180);
-    });
+    l.floatPhase += l.floatSpeed;
+
+    const ox = Math.cos(l.floatPhase) * 6;
+    const oy = Math.sin(l.floatPhase) * 6;
+
+    l.x += (l.targetX + ox - l.x) * 0.05;
+    l.y += (l.targetY + oy - l.y) * 0.05;
+
+    if (l.imgObj.complete) {
+      ctx.drawImage(l.imgObj, l.x, l.y, 140, 180);
+    }
+  });
 }
 
 
