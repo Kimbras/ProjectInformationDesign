@@ -443,7 +443,7 @@ const inspirationArt = [
     artist: "Hiroshige",
     category: "Japanse inspo",
     description: "Van Gogh kopieerde de kunstwerken van Hiroshige omdat hij dit ook wil maken",
-    img: "https://upload.wikimedia.org/wikipedia/commons/6/6e/Hiroshige_Plum_Estate_Kameido.jpg"
+    img: "https://upload.wikimedia.org/wikipedia/commons/a/a8/De_pruimenboomgaard_te_Kameido-Rijksmuseum_RP-P-1956-743.jpeg"
   },
   {
     id: 2,
@@ -451,7 +451,7 @@ const inspirationArt = [
     artist: "Hiroshige",
     category: "Japanse inspo",
     description: "Van Gogh kopieerde de kunstwerken van Hiroshige omdat hij dit ook wil maken",
-    img: "https://upload.wikimedia.org/wikipedia/commons/9/9e/Hiroshige_Evening_Shower_Atake.jpg"
+    img: "https://upload.wikimedia.org/wikipedia/commons/0/00/Hiroshige_-_Evening_Shower_at_Atake_and_the_Great_Bridge.jpg"
   },
   {
     id: 3,
@@ -507,7 +507,7 @@ const inspirationArt = [
     artist: "Katsushika Hokusai",
     category: "Japanse inspo",
     description: "Golven en swirls lijken sterk op Van Goghs stijl",
-    img: "https://upload.wikimedia.org/wikipedia/commons/0/0a/The_Great_Wave_off_Kanagawa.jpg"
+    img: "https://upload.wikimedia.org/wikipedia/commons/a/a5/Tsunami_by_hokusai_19th_century.jpg"
   },
 
   // 🖼️ Europese inspiratie / nagetekend
@@ -517,7 +517,7 @@ const inspirationArt = [
     artist: "Émile Bernard",
     category: "Nagetekend",
     description: "Van Gogh tekende dit werk na",
-    img: "https://upload.wikimedia.org/wikipedia/commons/4/4e/Emile_Bernard_-_Breton_Women_in_the_Meadow.jpg"
+    img: "https://upload.wikimedia.org/wikipedia/commons/6/6a/Émile_Bernard_1888-08_-_Breton_Women_in_the_Meadow_%28Le_Pardon_de_Pont-Aven%29.jpg"
   },
   {
     id: 11,
@@ -525,7 +525,7 @@ const inspirationArt = [
     artist: "Virginie Demont-Breton",
     category: "Nagetekend",
     description: "Nagetekend door Van Gogh",
-    img: "https://upload.wikimedia.org/wikipedia/commons/7/7e/Lhomme_est_en_mer.jpg"
+    img: "https://upload.wikimedia.org/wikipedia/commons/f/f3/L%27homme_est_en_mer.jpg"
   },
   {
     id: 12,
@@ -533,7 +533,7 @@ const inspirationArt = [
     artist: "Gustave Doré",
     category: "Nagetekend",
     description: "Nagetekend door Van Gogh",
-    img: "https://upload.wikimedia.org/wikipedia/commons/0/0d/Newgate-prison-exercise-yard.jpg"
+    img: "https://upload.wikimedia.org/wikipedia/commons/8/81/Newgate-prison-exercise-yard.jpg"
   },
   {
     id: 13,
@@ -541,7 +541,7 @@ const inspirationArt = [
     artist: "Jacob Jordaens",
     category: "Nagetekend",
     description: "Nagetekend door Van Gogh",
-    img: "https://upload.wikimedia.org/wikipedia/commons/8/84/Jordaens_cows.jpg"
+    img: "hhttps://upload.wikimedia.org/wikipedia/commons/0/0f/Lille_Jordaens_vaches.JPG"
   },
   {
     id: 14,
@@ -549,7 +549,7 @@ const inspirationArt = [
     artist: "Jean-François Millet",
     category: "Nagetekend",
     description: "Belangrijke inspiratiebron voor Van Gogh",
-    img: "https://upload.wikimedia.org/wikipedia/commons/5/5d/Millet_The_Sower.jpg"
+    img: "https://upload.wikimedia.org/wikipedia/commons/0/05/Vincent_Willem_van_Gogh_025.jpg"
   },
   {
     id: 15,
@@ -557,7 +557,15 @@ const inspirationArt = [
     artist: "Rembrandt van Rijn",
     category: "Sterk beïnvloed",
     description: "Van Gogh had veel respect voor Rembrandt",
-    img: "https://upload.wikimedia.org/wikipedia/commons/1/1e/Rembrandt_-_The_Raising_of_Lazarus.jpg"
+    img: "https://upload.wikimedia.org/wikipedia/commons/5/5f/Rembrandt_Harmensz._van_Rijn_015.jpg"
+  },
+    {
+    id: 16,
+    title: "Shearing sheep",
+    artist: "Jean-François Millet",
+    category: "Ngetekend",
+    description: "Van Gogh had veel respect voor Rembrandt",
+    img: "https://upload.wikimedia.org/wikipedia/commons/3/34/Labours_of_the_fields-Woman_shearing_sheep_%28Millet%29.jpg"
   },
   
 ];
@@ -612,7 +620,7 @@ const vanGoghArt = [
     madeIn: "Arles",
     museum: "Van Gogh Museum",
     size: "34 × 55 cm",
-    img: "https://upload.wikimedia.org/wikipedia/commons/4/47/Vincent_van_Gogh_-_De_slaapkamer_-_Google_Art_Project.jpg",
+    img: "https://upload.wikimedia.org/wikipedia/commons/7/76/Vincent_van_Gogh_-_De_slaapkamer_-_Google_Art_Project.jpg",
     inspirationId: 3
   },
   {
@@ -622,7 +630,7 @@ const vanGoghArt = [
     madeIn: "Saint-Rémy",
     museum: "Art Institute of Chicago",
     size: "30 × 50 cm",
-    img: "https://upload.wikimedia.org/wikipedia/commons/5/5f/Vincent_van_Gogh_-_The_Bedroom_-_Google_Art_Project.jpg",
+    img: "https://upload.wikimedia.org/wikipedia/commons/0/0b/Vincent_van_Gogh_-_The_Bedroom_-_Google_Art_Project.jpg",
     inspirationId: 3
   },
   {
@@ -711,6 +719,44 @@ const vanGoghArt = [
 /* =====================
    inspiratie van van gogh
 ===================== */
+function resizeCanvasToContent() {
+  let bottom = 0;
+
+  // inspiratie
+  inspirationArt.forEach(insp => {
+    const b = insp.y + insp.blockHeight;
+    if (b > bottom) bottom = b;
+  });
+
+  // Van Gogh
+  vanGoghArt.forEach(v => {
+    if (v.y !== undefined && v.blockHeight) {
+      const b = v.y + v.blockHeight;
+      if (b > bottom) bottom = b;
+    }
+  });
+
+  canvas.height = bottom + 80; // extra ademruimte
+}
+
+function measureWrappedText(ctx, text, maxWidth, lineHeight) {
+  const words = text.split(" ");
+  let line = "";
+  let lines = 1;
+
+  words.forEach(word => {
+    const testLine = line + word + " ";
+    if (ctx.measureText(testLine).width > maxWidth) {
+      lines++;
+      line = word + " ";
+    } else {
+      line = testLine;
+    }
+  });
+
+  return lines * lineHeight;
+}
+
 function drawWrappedText(ctx, text, x, y, maxWidth, lineHeight) {
   const words = text.split(" ");
   let line = "";
@@ -718,9 +764,7 @@ function drawWrappedText(ctx, text, x, y, maxWidth, lineHeight) {
 
   words.forEach(word => {
     const testLine = line + word + " ";
-    const metrics = ctx.measureText(testLine);
-
-    if (metrics.width > maxWidth && line !== "") {
+    if (ctx.measureText(testLine).width > maxWidth) {
       lines.push(line);
       line = word + " ";
     } else {
@@ -729,13 +773,20 @@ function drawWrappedText(ctx, text, x, y, maxWidth, lineHeight) {
   });
 
   lines.push(line);
+  lines.forEach((l, i) => ctx.fillText(l, x, y + i * lineHeight));
 
-  lines.forEach((l, i) => {
-    ctx.fillText(l, x, y + i * lineHeight);
-  });
-
-  return lines.length; // handig voor spacing eronder
+  return lines.length * lineHeight;
 }
+
+function rectsOverlap(a, b) {
+  return !(
+    a.x + a.w < b.x ||
+    a.x > b.x + b.w ||
+    a.y + a.h < b.y ||
+    a.y > b.y + b.h
+  );
+}
+
 
 function isOverlapping(x, y, size, items, padding = 20) {
   return items.some(it => {
@@ -769,31 +820,52 @@ function rectsOverlap(a, b) {
 
 function placeInspirationArt() {
   const placed = [];
-  const padding = 20;
+  const padding = 30;
 
   inspirationArt.forEach(insp => {
+    // image laden
     if (!insp.imgObj) {
       insp.imgObj = new Image();
       insp.imgObj.src = insp.img;
     }
 
-    // Eerst titel + artiest + beschrijving meten
     const size = INSP_SIZE;
-    const ctxFontBackup = ctx.font;
+
+    // ================================
+    // 🔑 TEKST METEN (NIET TEKENEN)
+    // ================================
+    const fontBackup = ctx.font;
+
     ctx.font = "bold 13px Inter, Arial, sans-serif";
-    const titleHeight = drawWrappedText(ctx, insp.title, 0, 0, size, 15);
+    const titleHeight = measureWrappedText(ctx, insp.title, size, 15);
+
     ctx.font = "12px Inter, Arial, sans-serif";
     const artistHeight = 14;
-    const descriptionHeight = drawWrappedText(ctx, insp.description, 0, 0, size, 15);
-    ctx.font = ctxFontBackup;
+    const descriptionHeight = measureWrappedText(ctx, insp.description, size, 15);
 
-    // totale hoogte van het blok
-    const blockHeight = size + titleHeight + 4 + artistHeight + 4 + descriptionHeight + 10;
+    ctx.font = fontBackup;
+
+    // ================================
+    // 🔒 VAST BLOK = FOTO + ALLE TEKST
+    // ================================
+    const blockHeight =
+      size +        // afbeelding
+      16 +          // ruimte onder foto
+      titleHeight +
+      4 +
+      artistHeight +
+      4 +
+      descriptionHeight +
+      10;
+
     insp.blockHeight = blockHeight;
 
-    // Zoek een vrije plek
+    // ================================
+    // 📍 VRIJE POSITIE ZOEKEN
+    // ================================
     let tries = 0;
     let pos;
+
     do {
       pos = {
         x: padding + Math.random() * (cw() - size - padding * 2),
@@ -804,11 +876,13 @@ function placeInspirationArt() {
       tries++;
     } while (
       placed.some(p => rectsOverlap(pos, p)) &&
-      tries < 1000
+      tries < 2000
     );
 
+    // positie vastzetten
     insp.x = pos.x;
     insp.y = pos.y;
+
     placed.push(pos);
   });
 
@@ -825,30 +899,50 @@ function findFreePosition(w, h, placedRects) {
   return { x, y, w, h };
 }
 
-function findFreePositionVanGogh(w, h, placedRects, inspirationRects) {
-  const padding = 20;
-  let tries = 0;
-  let pos;
+function getInspirationBottom() {
+  let bottom = 0;
 
-  do {
-    const yStart = ch() / 2 + 40; // begin onder inspiratie-schilderijen
-    pos = {
-      x: padding + Math.random() * (cw() - w - padding * 2),
-      y: yStart + Math.random() * (ch() - yStart - h - padding * 2),
-      w: w,
-      h: h
-    };
-    tries++;
-  } while (
-    // check overlap met eerder geplaatste Van Gogh
-    placedRects.some(p => rectsOverlap(pos, p)) ||
-    // check overlap met ALLE inspiratie-blokken
-    inspirationRects.some(p => rectsOverlap(pos, p)) &&
-    tries < 1000
-  );
+  inspirationArt.forEach(insp => {
+    const b = insp.y + insp.blockHeight;
+    if (b > bottom) bottom = b;
+  });
 
-  return pos;
+  return bottom + 40; // extra ruimte
 }
+
+
+function findFreePositionVanGogh(w, h, placedRects, inspirationRects) {
+  const padding = 30;
+  const yStart = getInspirationBottom();
+  let tries = 0;
+
+  while (tries < 3000) {
+    const pos = {
+      x: padding + Math.random() * (cw() - w - padding * 2),
+      y: yStart + Math.random() * (ch() - yStart - h - padding),
+      w,
+      h
+    };
+
+    const overlapVanGogh = placedRects.some(p =>
+      rectsOverlap(pos, p)
+    );
+
+    const overlapInspiration = inspirationRects.some(p =>
+      rectsOverlap(pos, p)
+    );
+
+    if (!overlapVanGogh && !overlapInspiration) {
+      return pos;
+    }
+
+    tries++;
+  }
+
+  console.warn("⚠️ Geen vrije plek gevonden voor Van Gogh");
+  return { x: 40, y: yStart, w, h };
+}
+
 
 const INSP_SIZE = 120;
 const INSP_MARGIN = 60;
@@ -876,16 +970,17 @@ function drawWrappedText(ctx, text, x, y, maxWidth, lineHeight) {
 
   return lines.length * lineHeight; // handig voor spacing
 }
+
 function drawVanGogh() {
   ctx.clearRect(0, 0, canvas.width, canvas.height);
 
-  // 🔑 Plaats inspiratie één keer
+  // 🔑 Inspiratie maar één keer positioneren
   if (!inspirationPositionsInitialized) {
     placeInspirationArt();
   }
 
   // ================================
-  // Inspiratie-schilderijen tekenen
+  // 1. INSPIRATIE-SCHILDERIJEN
   // ================================
   inspirationArt.forEach(insp => {
     if (!insp.imgObj) {
@@ -893,36 +988,71 @@ function drawVanGogh() {
       insp.imgObj.src = insp.img;
     }
 
-    if (insp.imgObj.complete && insp.imgObj.naturalWidth > 0) {
-      const size = INSP_SIZE;
-      ctx.drawImage(insp.imgObj, insp.x, insp.y, size, size);
+    if (!insp.imgObj.complete || insp.imgObj.naturalWidth === 0) return;
 
-      // titel
-      ctx.font = "bold 13px Inter, Arial, sans-serif";
-      ctx.fillStyle = "white";
-      ctx.textAlign = "center";
-      const titleHeight = drawWrappedText(ctx, insp.title, insp.x + size/2, insp.y + size + 16, size, 15);
+    const size = INSP_SIZE;
 
-      // artiest
-      ctx.font = "12px Inter, Arial, sans-serif";
-      ctx.fillStyle = "#cccccc";
-      ctx.fillText(insp.artist, insp.x + size/2, insp.y + size + 16 + titleHeight + 4);
+    // afbeelding
+    ctx.drawImage(insp.imgObj, insp.x, insp.y, size, size);
 
-      // beschrijving
-      ctx.font = "12px Inter, Arial, sans-serif";
-      ctx.fillStyle = "#aaaaaa";
-      const descHeight = drawWrappedText(ctx, insp.description, insp.x + size/2, insp.y + size + 16 + titleHeight + 20, size, 15);
+    ctx.textAlign = "center";
 
-      // totale hoogte van het inspiratie-blok
-      insp.blockHeight = size + 16 + titleHeight + 4 + 14 + 4 + descHeight + 10;
-    }
+    // titel
+    ctx.font = "bold 13px Inter, Arial, sans-serif";
+    ctx.fillStyle = "white";
+    const titleHeight = drawWrappedText(
+      ctx,
+      insp.title,
+      insp.x + size / 2,
+      insp.y + size + 16,
+      size,
+      15
+    );
+
+    // artiest
+    ctx.font = "12px Inter, Arial, sans-serif";
+    ctx.fillStyle = "#cccccc";
+    ctx.fillText(
+      insp.artist,
+      insp.x + size / 2,
+      insp.y + size + 16 + titleHeight + 4
+    );
+
+    // beschrijving
+    ctx.font = "12px Inter, Arial, sans-serif";
+    ctx.fillStyle = "#aaaaaa";
+    const descHeight = drawWrappedText(
+      ctx,
+      insp.description,
+      insp.x + size / 2,
+      insp.y + size + 16 + titleHeight + 20,
+      size,
+      15
+    );
+
+    // 🔑 volledige blokhoogte (voor overlap-detectie)
+    insp.blockHeight =
+      size +
+      16 +
+      titleHeight +
+      4 +
+      14 +
+      4 +
+      descHeight +
+      10;
   });
 
   // ================================
-  // Van Gogh-schilderijen tekenen
+  // 2. VAN GOGH SCHILDERIJEN
   // ================================
   if (activeInspiration) {
-    const related = vanGoghArt.filter(v => v.inspirationId === activeInspiration.id);
+    const related = vanGoghArt.filter(
+      v => v.inspirationId === activeInspiration.id
+    );
+
+    if (!drawVanGogh.placedRects) {
+      drawVanGogh.placedRects = [];
+    }
 
     related.forEach(v => {
       if (!v.imgObj) {
@@ -930,70 +1060,111 @@ function drawVanGogh() {
         v.imgObj.src = v.img;
       }
 
-      if (v.imgObj.complete && v.imgObj.naturalWidth > 0) {
-        const w = 180;
-        const h = 140;
+      if (!v.imgObj.complete || v.imgObj.naturalWidth === 0) return;
 
-        if (!drawVanGogh.placedRects) drawVanGogh.placedRects = [];
+      const w = 180;
+      const h = 140;
 
-        if (v.x === undefined || v.y === undefined) {
-          // lijst van inspiratie-blokken inclusief hun volledige hoogte
-          const inspirationRects = inspirationArt.map(i => ({
-            x: i.x,
-            y: i.y,
-            w: INSP_SIZE,
-            h: i.blockHeight
-          }));
+      // 🔍 ALLE inspiratie-blokken als rechthoeken
+      const inspirationRects = inspirationArt.map(i => ({
+        x: i.x,
+        y: i.y,
+        w: INSP_SIZE,
+        h: i.blockHeight
+      }));
 
-          // totale hoogte Van Gogh-blok (afbeelding + titel + beschrijving)
-          ctx.font = "bold 14px Inter, Arial, sans-serif";
-          const titleHeight = drawWrappedText(ctx, v.title, 0, 0, w, 16);
-          const inspData = inspirationArt.find(i => i.id === v.inspirationId);
-          ctx.font = "13px Inter, Arial, sans-serif";
-          const descHeight = inspData?.description ? drawWrappedText(ctx, inspData.description, 0, 0, w, 16) : 0;
-          const vBlockHeight = h + 8 + titleHeight + 4 + descHeight + 4;
+      // 🧮 hoogte Van Gogh-blok vooraf berekenen
+      ctx.font = "bold 14px Inter, Arial, sans-serif";
+      const titleHeight = measureWrappedText(ctx, v.title, w, 16);
 
-          // vind een vrije positie zonder overlap met inspiratie of andere Van Gogh
-          const pos = findFreePositionVanGogh(w, vBlockHeight, drawVanGogh.placedRects, inspirationRects);
-          v.x = pos.x;
-          v.y = pos.y;
-          drawVanGogh.placedRects.push({ x: v.x, y: v.y, w: w, h: vBlockHeight });
-        }
+      const inspData = inspirationArt.find(
+        i => i.id === v.inspirationId
+      );
 
-        // afbeelding
-        ctx.drawImage(v.imgObj, v.x, v.y, w, h);
+      ctx.font = "13px Inter, Arial, sans-serif";
+      const descHeight = inspData?.description
+        ? drawWrappedText(ctx, inspData.description, 0, 0, w, 16)
+        : 0;
 
-        // titel
-        ctx.font = "bold 14px Inter, Arial, sans-serif";
-        ctx.fillStyle = "white";
-        ctx.textAlign = "center";
-        const titleHeight = drawWrappedText(ctx, v.title, v.x + w/2, v.y + h + 8, w, 16);
+      const vBlockHeight =
+        h + 8 + titleHeight + 4 + descHeight + 8;
 
-        // beschrijving
-        const inspData = inspirationArt.find(i => i.id === v.inspirationId);
-        if (inspData && inspData.description) {
-          ctx.font = "13px Inter, Arial, sans-serif";
-          ctx.fillStyle = "#cccccc";
-          ctx.textAlign = "center";
-          drawWrappedText(ctx, inspData.description, v.x + w/2, v.y + h + 8 + titleHeight + 4, w, 16);
-        }
+      // 📍 positie bepalen (NOOIT overlap)
+      if (v.x === undefined || v.y === undefined) {
+        const pos = findFreePositionVanGogh(
+          w,
+          vBlockHeight,
+          drawVanGogh.placedRects,
+          inspirationRects
+        );
+
+        v.x = pos.x;
+        v.y = pos.y;
+
+        drawVanGogh.placedRects.push({
+          x: v.x,
+          y: v.y,
+          w: w,
+          h: vBlockHeight
+        });
+      }
+
+      // 🖼 afbeelding
+      ctx.drawImage(v.imgObj, v.x, v.y, w, h);
+
+      ctx.textAlign = "center";
+
+      // titel
+      ctx.font = "bold 14px Inter, Arial, sans-serif";
+      ctx.fillStyle = "white";
+      const tHeight = drawWrappedText(
+        ctx,
+        v.title,
+        v.x + w / 2,
+        v.y + h + 8,
+        w,
+        16
+      );
+
+      // beschrijving
+      if (inspData?.description) {
+        ctx.font = "13px Inter, Arial, sans-serif";
+        ctx.fillStyle = "#cccccc";
+        drawWrappedText(
+          ctx,
+          inspData.description,
+          v.x + w / 2,
+          v.y + h + 8 + tHeight + 4,
+          w,
+          16
+        );
       }
     });
   }
 
   // ================================
-  // Lijnen van inspiratie naar Van Gogh
+  // 3. VERBINDINGSLIJNEN
   // ================================
   vanGoghArt.forEach(v => {
-    const insp = inspirationArt.find(i => i.id === v.inspirationId);
-    if (insp && insp.imgObj && v.imgObj) {
-      ctx.strokeStyle = "rgba(255,255,255,0.3)";
-      ctx.lineWidth = 2;
-      ctx.beginPath();
-      ctx.moveTo(insp.x + INSP_SIZE/2, insp.y + INSP_SIZE/2);
-      ctx.lineTo(v.x + 180/2, v.y + 140/2);
-      ctx.stroke();
-    }
+    const insp = inspirationArt.find(
+      i => i.id === v.inspirationId
+    );
+
+    if (!insp || !v.imgObj) return;
+
+    ctx.strokeStyle = "rgba(255,255,255,0.3)";
+    ctx.lineWidth = 2;
+
+    ctx.beginPath();
+    ctx.moveTo(
+      insp.x + INSP_SIZE / 2,
+      insp.y + INSP_SIZE / 2
+    );
+    ctx.lineTo(
+      v.x + 180 / 2,
+      v.y + 140 / 2
+    );
+    ctx.stroke();
   });
 }
 
