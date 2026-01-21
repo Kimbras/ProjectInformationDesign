@@ -770,19 +770,37 @@ function rectsOverlap(a, b) {
 
 function placeInspirationArt() {
   const placed = [];
-  const size = INSP_SIZE;
-  const padding = 0;
+  const padding = 20;
 
   inspirationArt.forEach(insp => {
+    if (!insp.imgObj) {
+      insp.imgObj = new Image();
+      insp.imgObj.src = insp.img;
+    }
+
+    // Eerst titel + artiest + beschrijving meten
+    const size = INSP_SIZE;
+    const ctxFontBackup = ctx.font;
+    ctx.font = "bold 13px Inter, Arial, sans-serif";
+    const titleHeight = drawWrappedText(ctx, insp.title, 0, 0, size, 15);
+    ctx.font = "12px Inter, Arial, sans-serif";
+    const artistHeight = 14;
+    const descriptionHeight = drawWrappedText(ctx, insp.description, 0, 0, size, 15);
+    ctx.font = ctxFontBackup;
+
+    // totale hoogte van het blok
+    const blockHeight = size + titleHeight + 4 + artistHeight + 4 + descriptionHeight + 10;
+    insp.blockHeight = blockHeight;
+
+    // Zoek een vrije plek
     let tries = 0;
     let pos;
-
     do {
       pos = {
         x: padding + Math.random() * (cw() - size - padding * 2),
-        y: padding + Math.random() * (ch() / 2 - size - padding * 2),
+        y: padding + Math.random() * (ch() - blockHeight - padding * 2),
         w: size,
-        h: size
+        h: blockHeight
       };
       tries++;
     } while (
@@ -797,7 +815,6 @@ function placeInspirationArt() {
 
   inspirationPositionsInitialized = true;
 }
-
 
 
 function findFreePosition(w, h, placedRects) {
@@ -846,8 +863,6 @@ function drawVanGogh() {
   if (!inspirationPositionsInitialized) {
     placeInspirationArt();
   }
-  
-  ctx.clearRect(0, 0, canvas.width, canvas.height);
 
   // eerst inspiratie-art tekenen
   inspirationArt.forEach(insp => {
@@ -859,42 +874,42 @@ function drawVanGogh() {
     if (insp.imgObj.complete && insp.imgObj.naturalWidth > 0) {
       const size = 120;
 
-      
       ctx.drawImage(insp.imgObj, insp.x, insp.y, size, size);
 
-// naam + artiest
-ctx.font = "bold 13px Inter, Arial, sans-serif";
-ctx.fillStyle = "white";
-ctx.textAlign = "center";
+      // titel wrappen binnen de afbeelding
+      ctx.font = "bold 13px Inter, Arial, sans-serif";
+      ctx.fillStyle = "white";
+      ctx.textAlign = "center";
 
-ctx.fillText(
-  insp.title,
-  insp.x + size / 2,
-  insp.y + size + 16
-);
+      const titleHeight = drawWrappedText(
+        ctx,
+        insp.title,
+        insp.x + size / 2,
+        insp.y + size + 16,
+        size, // max breedte = afbeelding
+        15    // lijnhoogte
+      );
 
-ctx.font = "12px Inter, Arial, sans-serif";
-ctx.fillStyle = "#cccccc";
+      // artiest tekenen
+      ctx.font = "12px Inter, Arial, sans-serif";
+      ctx.fillStyle = "#cccccc";
+      ctx.fillText(
+        insp.artist,
+        insp.x + size / 2,
+        insp.y + size + 16 + titleHeight + 4
+      );
 
-ctx.fillText(
-  insp.artist,
-  insp.x + size / 2,
-  insp.y + size + 32
-);
-
-// beschrijving (word-wrap)
-ctx.font = "12px Inter, Arial, sans-serif";
-ctx.fillStyle = "#aaaaaa";
-
-drawWrappedText(
-  ctx,
-  insp.description,
-  insp.x + size / 2,
-  insp.y + size + 50,
-  size,        // 🔑 max breedte = foto breedte
-  15
-);
-
+      // beschrijving (word-wrap)
+      ctx.font = "12px Inter, Arial, sans-serif";
+      ctx.fillStyle = "#aaaaaa";
+      drawWrappedText(
+        ctx,
+        insp.description,
+        insp.x + size / 2,
+        insp.y + size + 16 + titleHeight + 20,
+        size,
+        15
+      );
     }
   });
 
@@ -904,67 +919,56 @@ drawWrappedText(
       v => v.inspirationId === activeInspiration.id
     );
 
-    related.forEach((v, i) => {
+    related.forEach(v => {
       if (!v.imgObj) {
         v.imgObj = new Image();
         v.imgObj.src = v.img;
       }
 
       if (v.imgObj.complete && v.imgObj.naturalWidth > 0) {
-        // positie van Van Gogh schilderij
-      
         const w = 180;
         const h = 140;
 
-      if (!drawVanGogh.placedRects) {
-      drawVanGogh.placedRects = [];
-      }
+        if (!drawVanGogh.placedRects) drawVanGogh.placedRects = [];
 
-if (v.x === undefined || v.y === undefined) {
-  const pos = findFreePosition(w, h, drawVanGogh.placedRects);
-  v.x = pos.x;
-  v.y = pos.y;
-  drawVanGogh.placedRects.push(pos);
-}
+        if (v.x === undefined || v.y === undefined) {
+          const pos = findFreePosition(w, h, drawVanGogh.placedRects);
+          v.x = pos.x;
+          v.y = pos.y;
+          drawVanGogh.placedRects.push(pos);
+        }
 
+        ctx.drawImage(v.imgObj, v.x, v.y, w, h);
 
-        ctx.drawImage(v.imgObj, v.x, v.y, 180, 140);
-
-        // titel
+        // titel wrappen
         ctx.font = "bold 14px Inter, Arial, sans-serif";
         ctx.fillStyle = "white";
         ctx.textAlign = "center";
-        ctx.fillText(v.title, v.x + 180 / 2, v.y + 140 + 18);
 
-        // toevoeging: inspiratiebeschrijving
+        const titleHeight = drawWrappedText(
+          ctx,
+          v.title,
+          v.x + w / 2,
+          v.y + h + 8,
+          w,    // max breedte = afbeelding
+          16    // lijnhoogte
+        );
+
+        // inspiratiebeschrijving onder titel
         const inspData = inspirationArt.find(i => i.id === v.inspirationId);
         if (inspData && inspData.description) {
           ctx.font = "13px Inter, Arial, sans-serif";
-          ctx.fillStyle = "#cccccc"; // iets subtieler
+          ctx.fillStyle = "#cccccc";
           ctx.textAlign = "center";
 
-          // split description in meerdere regels als hij te lang is
-          const maxWidth = 180; // zelfde breedte als afbeelding
-          const words = inspData.description.split(" ");
-          let line = "";
-          let lines = [];
-          words.forEach(word => {
-            const testLine = line + word + " ";
-            const metrics = ctx.measureText(testLine);
-            if (metrics.width > maxWidth) {
-              lines.push(line);
-              line = word + " ";
-            } else {
-              line = testLine;
-            }
-          });
-          lines.push(line);
-
-          // teken alle lijnen onder de titel
-          const startY = v.y + 140 + 18 + 16; // afbeelding + titel + beetje marge
-          lines.forEach((lineText, idx) => {
-            ctx.fillText(lineText, v.x + 180 / 2, startY + idx * 16);
-          });
+          drawWrappedText(
+            ctx,
+            inspData.description,
+            v.x + w / 2,
+            v.y + h + 8 + titleHeight + 4, // start net onder titel
+            w,
+            16
+          );
         }
       }
     });
@@ -989,6 +993,7 @@ if (v.x === undefined || v.y === undefined) {
     }
   });
 }
+
 
 
 
