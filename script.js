@@ -7,6 +7,8 @@ const ctx = canvas.getContext("2d");
 const imageCache = {};
 
 let mode = "paintings"; // startmodus
+let inspirationPositionsInitialized = false;
+
 
 function switchToPaintings() {
   mode = "paintings";
@@ -435,29 +437,320 @@ letters.forEach(l => {
 ===================== */
 // Inspiratie kunstwerken
 const inspirationArt = [
-  { id: 1, name: "Plum Park in Kameido", artist: "Hiroshige", description: "Van Gogh kopieerde de kunstwerken van Hiroshige omdat hij dit ook wil maken", img: "https://en.wikipedia.org/wiki/File:De_pruimenboomgaard_te_Kameido-Rijksmuseum_RP-P-1956-743.jpeg" },
-  { id: 2, name: "Evening Shower at Atake", artist: "Hiroshige", description: "Van Gogh kopieerde de kunstwerken van Hiroshige omdat hij dit ook wil maken", img: "https://en.wikipedia.org/wiki/File:Hiroshige_-_Evening_Shower_at_Atake_and_the_Great_Bridge.jpg" },
-  { id: 3, name: "Collection of New Ukiyoe Style Beauties", artist: "Kondo shiun", description: "Bij dit schilderij worden de felle platte vlakken overgenomen als inspiratie. Dit is veel voorkomend in Ukiyo-e kunst. Ook inspireerde Japanese kunst om zichzelf te tekenen als een boedistische monnik", img: "https://data.ukiyo-e.org/artelino/images/12444g1.jpg" },
-  { id: 4, name: "Courtisan", artist: "Keisai Eisen", description: "Van Gogh kopieerde de kunstwerken van Eisen om hiervan te leren en dit ook te kunnen", img: "https://uitdekunstmarina.nl/wp-content/uploads/2018/05/13.Keisai-Eisen-Courtisane-1.jpg" },
-  { id: 5, name: "Branch", artist: "Katsushika Hokusai", description: "Van Gogh deed veel inspiratie van Hokusai. Hier is het (Omhoog kijken) typisch Hokusai. Ook is een gedeelte van iets tekenen dus hier een tak van een boom erg Ukiyo-e", img: "https://arthive.com/res/media/img/oy800/work/cea/182736@2x.webp" },
-  { id: 6, name: "Kiribatake", artist: "Hiroshige", description: "Hier nam Van Gogh inspiratie op van afgehakte bovenkant. Bomen staan er niet compleet op", img: "https://www.scholten-japanese-art.com/artistimages/10-5547w.jpg" }
+  {
+    id: 1,
+    title: "Plum Park in Kameido",
+    artist: "Hiroshige",
+    category: "Japanse inspo",
+    description: "Van Gogh kopieerde de kunstwerken van Hiroshige omdat hij dit ook wil maken",
+    img: "https://upload.wikimedia.org/wikipedia/commons/6/6e/Hiroshige_Plum_Estate_Kameido.jpg"
+  },
+  {
+    id: 2,
+    title: "Evening Shower at Atake and the Great Bridge",
+    artist: "Hiroshige",
+    category: "Japanse inspo",
+    description: "Van Gogh kopieerde de kunstwerken van Hiroshige omdat hij dit ook wil maken",
+    img: "https://upload.wikimedia.org/wikipedia/commons/9/9e/Hiroshige_Evening_Shower_Atake.jpg"
+  },
+  {
+    id: 3,
+    title: "Collection of New Ukiyo-e Style Beauties",
+    artist: "Kondō Shiun",
+    category: "Japanse inspo",
+    description: "Felle platte vlakken en Ukiyo-e stijl inspireerden Van Gogh",
+    img: "https://data.ukiyo-e.org/artelino/images/12444g1.jpg"
+  },
+  {
+    id: 4,
+    title: "Courtisan",
+    artist: "Keisai Eisen",
+    category: "Japanse inspo",
+    description: "Van Gogh kopieerde Eisen om hiervan te leren",
+    img: "https://uitdekunstmarina.nl/wp-content/uploads/2018/05/13.Keisai-Eisen-Courtisane-1.jpg"
+  },
+  {
+    id: 5,
+    title: "Branch",
+    artist: "Katsushika Hokusai",
+    category: "Japanse inspo",
+    description: "Het omhoog kijken en fragmenten zijn typisch Hokusai",
+    img: "https://arthive.com/res/media/img/oy800/work/cea/182736@2x.webp"
+  },
+  {
+    id: 6,
+    title: "Kiribatake",
+    artist: "Hiroshige",
+    category: "Japanse inspo",
+    description: "Afgesneden compositie van bomen",
+    img: "https://www.scholten-japanese-art.com/artistimages/10-5547w.jpg"
+  },
+  {
+    id: 7,
+    title: "Japanese Woodblock Print Hitomoto",
+    artist: "Tsunoda Kunisada",
+    category: "Japanse inspo",
+    description: "Felle vlakken en zwarte contourlijnen",
+    img: "https://www.uchiyama.nl/Images/kunisada2.jpg"
+  },
+  {
+    id: 8,
+    title: "Herfstbloemen, gele vogel en insecten",
+    artist: "Onbekende Japanse kunstenaar",
+    category: "Japanse inspo",
+    description: "Van Gogh kopieerde dit Japanse werk",
+    img: "https://flashbak.com/wp-content/uploads/2019/01/VanGoghJapanprints-27-1200x1827.jpg"
+  },
+  {
+    id: 9,
+    title: "The Great Wave off Kanagawa",
+    artist: "Katsushika Hokusai",
+    category: "Japanse inspo",
+    description: "Golven en swirls lijken sterk op Van Goghs stijl",
+    img: "https://upload.wikimedia.org/wikipedia/commons/0/0a/The_Great_Wave_off_Kanagawa.jpg"
+  },
+
+  // 🖼️ Europese inspiratie / nagetekend
+  {
+    id: 10,
+    title: "Breton Women in the Meadow",
+    artist: "Émile Bernard",
+    category: "Nagetekend",
+    description: "Van Gogh tekende dit werk na",
+    img: "https://upload.wikimedia.org/wikipedia/commons/4/4e/Emile_Bernard_-_Breton_Women_in_the_Meadow.jpg"
+  },
+  {
+    id: 11,
+    title: "Her Man at Sea",
+    artist: "Virginie Demont-Breton",
+    category: "Nagetekend",
+    description: "Nagetekend door Van Gogh",
+    img: "https://upload.wikimedia.org/wikipedia/commons/7/7e/Lhomme_est_en_mer.jpg"
+  },
+  {
+    id: 12,
+    title: "Newgate Exercise Yard",
+    artist: "Gustave Doré",
+    category: "Nagetekend",
+    description: "Nagetekend door Van Gogh",
+    img: "https://upload.wikimedia.org/wikipedia/commons/0/0d/Newgate-prison-exercise-yard.jpg"
+  },
+  {
+    id: 13,
+    title: "Cows",
+    artist: "Jacob Jordaens",
+    category: "Nagetekend",
+    description: "Nagetekend door Van Gogh",
+    img: "https://upload.wikimedia.org/wikipedia/commons/8/84/Jordaens_cows.jpg"
+  },
+  {
+    id: 14,
+    title: "The Sower",
+    artist: "Jean-François Millet",
+    category: "Nagetekend",
+    description: "Belangrijke inspiratiebron voor Van Gogh",
+    img: "https://upload.wikimedia.org/wikipedia/commons/5/5d/Millet_The_Sower.jpg"
+  },
+  {
+    id: 15,
+    title: "The Raising of Lazarus",
+    artist: "Rembrandt van Rijn",
+    category: "Sterk beïnvloed",
+    description: "Van Gogh had veel respect voor Rembrandt",
+    img: "https://upload.wikimedia.org/wikipedia/commons/1/1e/Rembrandt_-_The_Raising_of_Lazarus.jpg"
+  },
+  
 ];
+
 
 // Van Gogh kunstwerken
 const vanGoghArt = [
-  { id: 1, title: "De bloeiende pruimenboom (naar Hiroshige)", year: 1887, location: "Parijs", museum: "Van Gogh Museum", size: "34 x 55", img: "https://data.spinque.com/iiif/2/vangoghworldwide%2Fvgm%2Fs0115V1962_gb.jpg/full/!682,440/0/default.jpg", inspirationId: 1 },
-  { id: 2, title: "Liggende koe", year: 1883, location: "Den Haag", museum: "Private collection", size: "30 x 50", img: "https://data.spinque.com/iiif/2/vangoghworldwide%2Fdavidbrooks%2Ffull%2FF0001b_x01.jpg/full/!995,642/0/default.jpg", inspirationId: 1 },
-  { id: 3, title: "Strand en zee", year: 1882, location: "Den Haag", museum: "Metropolitan Museum of Art", size: "19 x 47.5", img: "https://data.spinque.com/iiif/2/vangoghworldwide%2Fdavidbrooks%2Ffull%2FF0002_x01.jpg/full/!995,642/0/default.jpg", inspirationId: 1 },
-  { id: 4, title: "De brug in de regen (naar Hiroshige)", year: 1887, location: "Parijs", museum: "Van Gogh Museum", size: "35.5 x 49.5", img: "https://data.spinque.com/iiif/2/vangoghworldwide%2Fvgm%2Fs0114V1962_gb.jpg/full/!682,440/0/default.jpg", inspirationId: 2 },
-  { id: 5, title: "Zelfportret", year: 1888, location: "Arles", museum: "Harvard Art Museums/Fogg Museum", size: "36 x 58.5", img: "https://data.spinque.com/iiif/2/vangoghworldwide%2Fdavidbrooks%2Ffull%2FF0476_x01.jpg/full/!682,440/0/default.jpg", inspirationId: 3 },
-  { id: 6, title: "De courtisane (naar Eisen)", year: 1887, location: "Parijs", museum: "Van Gogh Museum", size: "24 x 32", img: "https://upload.wikimedia.org/wikipedia/commons/b/b3/Courtisane_%28naar_Eisen%29_-_s0116V1962_-_Van_Gogh_Museum.jpg", inspirationId: 4 },
-  { id: 7, title: "Amandelbloesem", year: 1890, location: "Saint-Rémy", museum: "Van Gogh Museum", size: "34.5 x 51", img: "https://www.cultuurblogger.nl/wp-content/uploads/2018/03/vangoghmuseum-s0176V1962-800-Small.jpg", inspirationId: 5 },
-  { id: 8, title: "Kreupelhout met twee figuren", year: 1887, location: "Auvers-sur-Oise", museum: "Van Gogh Museum", size: "51.1 x 32.8", img: "https://www.cultuurblogger.nl/wp-content/uploads/2018/03/unnamed-11-Small.jpg", inspirationId: 6 }
+  {
+    id: 1,
+    title: "De bloeiende pruimenboom (naar Hiroshige)",
+    year: 1887,
+    madeIn: "Parijs",
+    museum: "Van Gogh Museum",
+    size: "34 × 55 cm",
+    img: "https://data.spinque.com/iiif/2/vangoghworldwide%2Fvgm%2Fs0115V1962_gb.jpg/full/!682,440/0/default.jpg",
+    inspirationId: 1
+  },
+  {
+    id: 2,
+    title: "De brug in de regen (naar Hiroshige)",
+    year: 1887,
+    madeIn: "Parijs",
+    museum: "Van Gogh Museum",
+    size: "30 × 50 cm",
+    img: "https://data.spinque.com/iiif/2/vangoghworldwide%2Fvgm%2Fs0114V1962_gb.jpg/full/!682,440/0/default.jpg",
+    inspirationId: 2
+  },
+  {
+    id: 3,
+    title: "Zelfportret",
+    year: 1888,
+    madeIn: "Arles",
+    museum: "Harvard Art Museums / Fogg Museum",
+    size: "19 × 47.5 cm",
+    img: "https://data.spinque.com/iiif/2/vangoghworldwide%2Fdavidbrooks%2Ffull%2FF0476_x01.jpg/full/!682,440/0/default.jpg",
+    inspirationId: 3
+  },
+  {
+    id: 3,
+    title: "L'Arlésienne (Madame Ginoux)",
+    year: 1888,
+    madeIn: "Arles",
+    museum: "Metropolitan Museum of Art",
+    size: "—",
+    img: "https://data.spinque.com/iiif/2/vangoghworldwide%2Fdavidbrooks%2Ffull%2FF0488_x01.jpg/full/!682,440/0/default.jpg",
+    inspirationId: 3
+  },
+  {
+    id: 3,
+    title: "De slaapkamer",
+    year: 1888,
+    madeIn: "Arles",
+    museum: "Van Gogh Museum",
+    size: "34 × 55 cm",
+    img: "https://upload.wikimedia.org/wikipedia/commons/4/47/Vincent_van_Gogh_-_De_slaapkamer_-_Google_Art_Project.jpg",
+    inspirationId: 3
+  },
+  {
+    id: 3,
+    title: "De slaapkamer",
+    year: 1889,
+    madeIn: "Saint-Rémy",
+    museum: "Art Institute of Chicago",
+    size: "30 × 50 cm",
+    img: "https://upload.wikimedia.org/wikipedia/commons/5/5f/Vincent_van_Gogh_-_The_Bedroom_-_Google_Art_Project.jpg",
+    inspirationId: 3
+  },
+  {
+    id: 4,
+    title: "De courtisane (naar Eisen)",
+    year: 1887,
+    madeIn: "Parijs",
+    museum: "Van Gogh Museum",
+    size: "51.1 × 32.8 cm",
+    img: "https://upload.wikimedia.org/wikipedia/commons/b/b3/Courtisane_%28naar_Eisen%29_-_s0116V1962_-_Van_Gogh_Museum.jpg",
+    inspirationId: 4
+  },
+  {
+    id: 5,
+    title: "Amandelbloesem",
+    year: 1890,
+    madeIn: "Saint-Rémy",
+    museum: "Van Gogh Museum",
+    size: "51.6 × 33.9 cm",
+    img: "https://www.cultuurblogger.nl/wp-content/uploads/2018/03/vangoghmuseum-s0176V1962-800-Small.jpg",
+    inspirationId: 5
+  },
+  {
+    id: 6,
+    title: "Kreupelhout met twee figuren",
+    year: 1887,
+    madeIn: "Auvers-sur-Oise",
+    museum: "Van Gogh Museum",
+    size: "34.7 × 47.3 cm",
+    img: "https://www.cultuurblogger.nl/wp-content/uploads/2018/03/unnamed-11-Small.jpg",
+    inspirationId: 6
+  },
+  {
+    id: 6,
+    title: "De sterrennacht",
+    year: 1888,
+    madeIn: "Arles",
+    museum: "Musée d'Orsay",
+    size: "35 × 47 cm",
+    img: "https://upload.wikimedia.org/wikipedia/commons/e/ea/Vincent_van_Gogh_-_Starry_Night_-_Google_Art_Project.jpg",
+    inspirationId: 9
+  },
+  {
+    id: 6,
+    title: "De gevangenisbinnenplaats (naar Doré)",
+    year: 1890,
+    madeIn: "Saint-Rémy",
+    museum: "Pushkin Museum",
+    size: "19 × 27.5 cm",
+    img: "https://upload.wikimedia.org/wikipedia/commons/7/77/Vincent_van_Gogh_-_Prisoners_Exercising.jpg",
+    inspirationId: 12
+  },
+  {
+    id: 7,
+    title: "De opwekking van Lazarus (naar Rembrandt)",
+    year: 1890,
+    madeIn: "Saint-Rémy",
+    museum: "Van Gogh Museum",
+    size: "33.5 × 48.5 cm",
+    img: "https://upload.wikimedia.org/wikipedia/commons/6/60/Vincent_van_Gogh_-_The_Raising_of_Lazarus.jpg",
+    inspirationId: 15
+  },
+  {
+    id: 7,
+    title: "Pietà (naar Delacroix)",
+    year: 1889,
+    madeIn: "Saint-Rémy",
+    museum: "Van Gogh Museum",
+    size: "27.8 × 36.5 cm",
+    img: "https://upload.wikimedia.org/wikipedia/commons/5/57/Vincent_van_Gogh_-_Pieta.jpg",
+    inspirationId: 19
+  },
+  {
+    id: 8,
+    title: "De barmhartige Samaritaan (naar Delacroix)",
+    year: 1890,
+    madeIn: "Saint-Rémy",
+    museum: "Kröller-Müller Museum",
+    size: "30.5 × 39.5 cm",
+    img: "https://upload.wikimedia.org/wikipedia/commons/0/0c/Vincent_van_Gogh_-_The_Good_Samaritan.jpg",
+    inspirationId: 20
+  }
 ];
+
 
 /* =====================
    inspiratie van van gogh
 ===================== */
+function drawWrappedText(ctx, text, x, y, maxWidth, lineHeight) {
+  const words = text.split(" ");
+  let line = "";
+  let lines = [];
+
+  words.forEach(word => {
+    const testLine = line + word + " ";
+    const metrics = ctx.measureText(testLine);
+
+    if (metrics.width > maxWidth && line !== "") {
+      lines.push(line);
+      line = word + " ";
+    } else {
+      line = testLine;
+    }
+  });
+
+  lines.push(line);
+
+  lines.forEach((l, i) => {
+    ctx.fillText(l, x, y + i * lineHeight);
+  });
+
+  return lines.length; // handig voor spacing eronder
+}
+
+
+function isOverlapping(x, y, size, items, padding = 20) {
+  return items.some(it => {
+    if (it.x === undefined || it.y === undefined) return false;
+
+    return !(
+      x + size + padding < it.x ||
+      x > it.x + size + padding ||
+      y + size + padding < it.y ||
+      y > it.y + size + padding
+    );
+  });
+}
+
 function showInspiration() {
   mode = "vanGogh";
   activeInspiration = null;
@@ -466,7 +759,94 @@ function showInspiration() {
 
 document.getElementById("vanGoghBtn").addEventListener("click", showInspiration);
 
+function rectsOverlap(a, b) {
+  return !(
+    a.x + a.w < b.x ||
+    a.x > b.x + b.w ||
+    a.y + a.h < b.y ||
+    a.y > b.y + b.h
+  );
+}
+
+function placeInspirationArt() {
+  const placed = [];
+  const size = INSP_SIZE;
+  const padding = 0;
+
+  inspirationArt.forEach(insp => {
+    let tries = 0;
+    let pos;
+
+    do {
+      pos = {
+        x: padding + Math.random() * (cw() - size - padding * 2),
+        y: padding + Math.random() * (ch() / 2 - size - padding * 2),
+        w: size,
+        h: size
+      };
+      tries++;
+    } while (
+      placed.some(p => rectsOverlap(pos, p)) &&
+      tries < 1000
+    );
+
+    insp.x = pos.x;
+    insp.y = pos.y;
+    placed.push(pos);
+  });
+
+  inspirationPositionsInitialized = true;
+}
+
+
+
+function findFreePosition(w, h, placedRects) {
+  const cols = Math.floor(cw() / (w + 40));
+  const index = placedRects.length;
+
+  const x = 40 + (index % cols) * (w + 40);
+  const y = ch() / 2 + 60 + Math.floor(index / cols) * (h + 80);
+
+  return { x, y, w, h };
+}
+
+
+const INSP_SIZE = 120;
+const INSP_MARGIN = 60;
+
+function drawWrappedText(ctx, text, x, y, maxWidth, lineHeight) {
+  const words = text.split(" ");
+  let line = "";
+  let lines = [];
+
+  words.forEach(word => {
+    const testLine = line + word + " ";
+    if (ctx.measureText(testLine).width > maxWidth) {
+      lines.push(line);
+      line = word + " ";
+    } else {
+      line = testLine;
+    }
+  });
+
+  lines.push(line);
+
+  lines.forEach((l, i) => {
+    ctx.fillText(l, x, y + i * lineHeight);
+  });
+
+  return lines.length * lineHeight; // handig voor spacing
+}
+
+
 function drawVanGogh() {
+  ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+  // 🔑 PLAATS INSPIRATIE ÉÉN KEER
+  if (!inspirationPositionsInitialized) {
+    placeInspirationArt();
+  }
+  
   ctx.clearRect(0, 0, canvas.width, canvas.height);
 
   // eerst inspiratie-art tekenen
@@ -479,12 +859,42 @@ function drawVanGogh() {
     if (insp.imgObj.complete && insp.imgObj.naturalWidth > 0) {
       const size = 120;
 
-      if (insp.x === undefined) {
-        insp.x = 50 + Math.random() * (canvas.width - 200);
-        insp.y = 50 + Math.random() * (canvas.height / 2);
-      }
-
+      
       ctx.drawImage(insp.imgObj, insp.x, insp.y, size, size);
+
+// naam + artiest
+ctx.font = "bold 13px Inter, Arial, sans-serif";
+ctx.fillStyle = "white";
+ctx.textAlign = "center";
+
+ctx.fillText(
+  insp.title,
+  insp.x + size / 2,
+  insp.y + size + 16
+);
+
+ctx.font = "12px Inter, Arial, sans-serif";
+ctx.fillStyle = "#cccccc";
+
+ctx.fillText(
+  insp.artist,
+  insp.x + size / 2,
+  insp.y + size + 32
+);
+
+// beschrijving (word-wrap)
+ctx.font = "12px Inter, Arial, sans-serif";
+ctx.fillStyle = "#aaaaaa";
+
+drawWrappedText(
+  ctx,
+  insp.description,
+  insp.x + size / 2,
+  insp.y + size + 50,
+  size,        // 🔑 max breedte = foto breedte
+  15
+);
+
     }
   });
 
@@ -502,12 +912,21 @@ function drawVanGogh() {
 
       if (v.imgObj.complete && v.imgObj.naturalWidth > 0) {
         // positie van Van Gogh schilderij
-        if (v.x === undefined) {
-          const w = 180;
-          const h = 140;
-          v.x = 150 + i * (w + 20);
-          v.y = 380;
-        }
+      
+        const w = 180;
+        const h = 140;
+
+      if (!drawVanGogh.placedRects) {
+      drawVanGogh.placedRects = [];
+      }
+
+if (v.x === undefined || v.y === undefined) {
+  const pos = findFreePosition(w, h, drawVanGogh.placedRects);
+  v.x = pos.x;
+  v.y = pos.y;
+  drawVanGogh.placedRects.push(pos);
+}
+
 
         ctx.drawImage(v.imgObj, v.x, v.y, 180, 140);
 
@@ -598,22 +1017,29 @@ canvas.addEventListener("click", () => {
   }
 
   // Van Gogh inspiratie mode
-  if (mode === "vanGogh") {
-    for (const insp of inspirationArt) {
-      const size = 120;
-      if (
-        mouse.x >= insp.x &&
-        mouse.x <= insp.x + size &&
-        mouse.y >= insp.y &&
-        mouse.y <= insp.y + size
-      ) {
-        activeInspiration = insp;
-        activeLetter = null; // reset letters
-        break;
-      }
+ if (mode === "vanGogh") {
+  for (const insp of inspirationArt) {
+    const size = 120;
+    if (
+      mouse.x >= insp.x &&
+      mouse.x <= insp.x + size &&
+      mouse.y >= insp.y &&
+      mouse.y <= insp.y + size
+    ) {
+      activeInspiration = insp;
+
+      // 🔥 reset Van Gogh posities
+      vanGoghArt.forEach(v => {
+        v.x = undefined;
+        v.y = undefined;
+      });
+      drawVanGogh.placedRects = [];
+
+      break;
     }
-    return;
   }
+}
+
 
   // Paintings mode (optioneel)
   if (mode === "paintings") {
