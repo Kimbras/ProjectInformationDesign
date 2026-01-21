@@ -819,21 +819,20 @@ function rectsOverlap(a, b) {
 }
 
 function placeInspirationArt() {
-  const placed = [];
-  const padding = 30;
+  const paddingX = 40;
+  const paddingY = 40;
+  const gapX = 40;
+  const gapY = 40;
 
+  const size = INSP_SIZE;
+
+  // eerst alle blokhoogtes berekenen
   inspirationArt.forEach(insp => {
-    // image laden
     if (!insp.imgObj) {
       insp.imgObj = new Image();
       insp.imgObj.src = insp.img;
     }
 
-    const size = INSP_SIZE;
-
-    // ================================
-    // 🔑 TEKST METEN (NIET TEKENEN)
-    // ================================
     const fontBackup = ctx.font;
 
     ctx.font = "bold 13px Inter, Arial, sans-serif";
@@ -841,16 +840,14 @@ function placeInspirationArt() {
 
     ctx.font = "12px Inter, Arial, sans-serif";
     const artistHeight = 14;
+
     const descriptionHeight = measureWrappedText(ctx, insp.description, size, 15);
 
     ctx.font = fontBackup;
 
-    // ================================
-    // 🔒 VAST BLOK = FOTO + ALLE TEKST
-    // ================================
     const blockHeight =
       size +        // afbeelding
-      16 +          // ruimte onder foto
+      16 +          // ruimte onder afbeelding
       titleHeight +
       4 +
       artistHeight +
@@ -859,35 +856,50 @@ function placeInspirationArt() {
       10;
 
     insp.blockHeight = blockHeight;
-
-    // ================================
-    // 📍 VRIJE POSITIE ZOEKEN
-    // ================================
-    let tries = 0;
-    let pos;
-
-    do {
-      pos = {
-        x: padding + Math.random() * (cw() - size - padding * 2),
-        y: padding + Math.random() * (ch() - blockHeight - padding * 2),
-        w: size,
-        h: blockHeight
-      };
-      tries++;
-    } while (
-      placed.some(p => rectsOverlap(pos, p)) &&
-      tries < 2000
-    );
-
-    // positie vastzetten
-    insp.x = pos.x;
-    insp.y = pos.y;
-
-    placed.push(pos);
   });
+
+  // bepalen hoeveel kolommen passen
+  const cols = Math.max(1, Math.floor((cw() - paddingX * 2) / (size + gapX)));
+
+  let col = 0;
+  let row = 0;
+  let rowHeight = 0; // hoogte van de huidige rij
+
+  for (let i = 0; i < inspirationArt.length; i++) {
+    const insp = inspirationArt[i];
+
+    // x positie
+    insp.x = paddingX + col * (size + gapX);
+
+    // y positie = start van rij + padding boven
+    insp.y = paddingY + row * rowHeight;
+
+    // update rowHeight naar hoogste blok in deze rij
+    rowHeight = Math.max(rowHeight, insp.blockHeight + gapY);
+
+    col++;
+
+    // nieuwe rij
+    if (col >= cols) {
+      col = 0;
+      row++;
+      rowHeight = 0; // reset voor nieuwe rij
+    }
+  }
+
+  // canvas hoogte aanpassen zodat alles past
+  let bottom = 0;
+  inspirationArt.forEach(insp => {
+    const b = insp.y + insp.blockHeight;
+    if (b > bottom) bottom = b;
+  });
+
+  canvas.height = bottom + paddingY; // extra ademruimte onderaan
 
   inspirationPositionsInitialized = true;
 }
+
+
 
 function findFreePosition(w, h, placedRects) {
   const cols = Math.floor(cw() / (w + 40));
@@ -1065,7 +1077,7 @@ function drawVanGogh() {
       const w = 180;
       const h = 140;
 
-      // 🔍 ALLE inspiratie-blokken als rechthoeken
+      //  ALLE inspiratie-blokken als rechthoeken
       const inspirationRects = inspirationArt.map(i => ({
         x: i.x,
         y: i.y,
@@ -1073,7 +1085,7 @@ function drawVanGogh() {
         h: i.blockHeight
       }));
 
-      // 🧮 hoogte Van Gogh-blok vooraf berekenen
+      //  hoogte Van Gogh-blok vooraf berekenen
       ctx.font = "bold 14px Inter, Arial, sans-serif";
       const titleHeight = measureWrappedText(ctx, v.title, w, 16);
 
@@ -1088,6 +1100,7 @@ function drawVanGogh() {
 
       const vBlockHeight =
         h + 8 + titleHeight + 4 + descHeight + 8;
+        v.blockHeight = vBlockHeight;
 
       // 📍 positie bepalen (NOOIT overlap)
       if (v.x === undefined || v.y === undefined) {
