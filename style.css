@@ -1,6 +1,6 @@
 @font-face {
   font-family: "Timeless";
-  src: url("fonts/Timeless.ttf") format("truetype");
+  src: url("fonts/Gontserrat-Regular.ttf") format("truetype");
   font-weight: normal;
   font-style: normal;
 }
@@ -10,7 +10,7 @@ html, body {
   padding: 0;
   overflow: hidden;
   background: #020617;
-  font-family: "Timeless", serif;
+  font-family: "Gontserrat", serif;
   height: 100%;
 }
 
@@ -75,7 +75,7 @@ button {
   margin-left: 30px;  /* reserveer ruimte voor sidebar */
   display: block;
   background: #020617;
-  font-family: "Timeless", serif;
+  font-family: "Gontserrat", serif;
 }
 
 #canvasContainer{
@@ -105,7 +105,7 @@ button {
   gap: 10px;
   z-index: 1000;
   overflow-y: auto;
-  font-family: "Timeless", serif;
+  font-family: "Gontserrat", serif; 
   /*transform: translateX(100%); /* begin buiten scherm */
   /*transition: transform 0.5s ease; /* animatie */
 }
@@ -179,7 +179,7 @@ button {
   line-height: 1.4;
   text-shadow: 2px 2px 8px rgba(0,0,0,0.7);
   z-index: 10;
-  font-family: "Timeless", serif;
+  font-family: "Gontserrat", serif;
 }
 
 #storyOverlay.hidden {
@@ -204,7 +204,7 @@ button {
   box-sizing: border-box;
   background: rgba(2, 6, 23, 0.95);
   color: #f1f1f1;
-  font-family: "Timeless", serif;
+  font-family: "Gontserrat", serif;
   overflow-y: auto;
   display: none;
   z-index: 5;
@@ -219,7 +219,7 @@ button {
 #colofonOverlay h2 {
   font-size: 48px;
   margin-bottom: 1em;
-  font-family: "Timeless", serif;
+  font-family: "Gontserrat", serif;
   font-weight: 700;
   color: #e33d1c;
 }
@@ -228,7 +228,7 @@ button {
   font-size: 28px;
   margin-top: 2em;
   margin-bottom: 0.5em;
-  font-family: "Timeless", serif;
+  font-family: "Gontserrat", serif;
   color: #9fbcff;
 }
 
