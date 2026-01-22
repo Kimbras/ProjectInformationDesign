@@ -217,14 +217,17 @@ const paintingsBtn = document.getElementById("paintingsBtn");
 const yearBtn = document.getElementById("yearBtn");
 const madeInBtn = document.getElementById("madeInBtn");
 const currentLocationBtn = document.getElementById("currentLocationBtn");
-document.querySelectorAll('.subBtn[data-view="currentLocation"]').forEach(btn => {
-  btn.addEventListener("click", () => {
-    hideOverlays();                     
-    sortByLocation("currentLocation");  
-    showTop10Musea();                   
-  });
-});
+const museumBtns = document.querySelectorAll('.subBtn[data-view="currentLocation"]');
 
+if (museumBtns.length) {
+  museumBtns.forEach(btn => {
+    btn.addEventListener("click", () => {
+      hideOverlays();
+      sortByLocation("currentLocation");
+      showTop10Musea();
+    });
+  });
+}
 
 
 
@@ -326,28 +329,22 @@ function sortByLocation(field) {
 }
 
 function showTop10Musea() {
-  const museumCounts = {};
+  const museumCounts = bolletjes.reduce((acc, b) => {
+    const museum = b.data.currentLocation || "Onbekend";
+    acc[museum] = (acc[museum] || 0) + 1;
+    return acc;
+  }, {});
 
-  bolletjes.forEach(b => {
-    const museum = b.data.currentLocation?.trim();
-    if (!museum) return;
-
-    museumCounts[museum] = (museumCounts[museum] || 0) + 1;
-  });
-
-  const top10 = Object.entries(museumCounts)
+  const topMuseums = Object.entries(museumCounts)
     .sort((a, b) => b[1] - a[1])
     .slice(0, 10);
 
-  storyOverlay.innerHTML =
-    "<strong>Top 10 musea met meeste Van Gogh-schilderijen</strong><br><br>" +
-    top10
-      .map(([museum, count], i) =>
-        `${i + 1}. ${museum} – ${count} schilderij(en)`
-      )
-      .join("<br>");
+  console.log("Top 10 musea:");
+  topMuseums.forEach(([museum, count], i) => {
+    console.log(`${i + 1}. ${museum} – ${count}`);
+  });
 
-  storyOverlay.style.display = "block";
+  return topMuseums; // 👈 handig voor later
 }
 
 
@@ -6423,12 +6420,6 @@ mainBtns.forEach(btn => {
       topMuseums.forEach(([museum, count], index) => {
         console.log(`${index + 1}. ${museum} - ${count} schilderij(en)`);
       });
-
-      // Als je het visueel wilt tonen in de overlay:
-      overlay.textContent =
-        "Top 10 musea:\n" +
-        topMuseums.map(([m,c],i) => `${i+1}. ${m} - ${c} schilderij(en)`).join("\n");
-      overlay.style.display = "block";
     }
   });
 });
@@ -6479,8 +6470,6 @@ function showStoryText(index, showOverlay = true) {
   }
 
   if (showOverlay) {
-    overlay.textContent = storyText[index];
-    overlay.style.display = "block";
   } else {
     overlay.style.display = "none";
   }
