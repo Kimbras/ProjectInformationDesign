@@ -308,34 +308,25 @@ function sortByYear() {
 function sortByLocation(field) {
   clusterLabels = [];
 
+  const spacing = 140;
   const keys = [...new Set(bolletjes.map(b => b.data[field]))];
 
-  const padding = 100;
-  const availableWidth = cw() - padding * 2;
-  const spacing = Math.max(120, availableWidth / keys.length);
-
-  const startX = padding;
-  const centerY = ch() / 2;
-
   keys.forEach((key, i) => {
-    const x = startX + i * spacing;
+    const x = 200 + i * spacing;
+    const y = canvas.height / 2;
 
-    // 🔒 clamp zodat labels nooit buiten beeld gaan
-    const safeX = clamp(x, padding, cw() - padding);
-
-    addClusterLabel(key, safeX, centerY - 70);
+    addClusterLabel(key, x, y - 70);
 
     bolletjes
       .filter(b => b.data[field] === key)
       .forEach((b, j) => {
         b.target = {
-          x: safeX + (j % 5) * 18,
-          y: centerY + Math.floor(j / 5) * 18
+          x: x + (j % 5) * 18,
+          y: y + Math.floor(j / 5) * 18
         };
       });
   });
 }
-
 
 function showTop10Musea() {
   const museumCounts = bolletjes.reduce((acc, b) => {
@@ -353,62 +344,8 @@ function showTop10Musea() {
     console.log(`${i + 1}. ${museum} – ${count}`);
   });
 
-  return topMuseums; //  handig voor later
+  return topMuseums; // 👈 handig voor later
 }
-
-function sortByTop10Musea() {
-  clusterLabels = [];
-
-  // 🔥 Top 10 musea
-  const museumCounts = bolletjes.reduce((acc, b) => {
-    const museum = b.data.currentLocation || "Onbekend";
-    acc[museum] = (acc[museum] || 0) + 1;
-    return acc;
-  }, {});
-
-  const top10 = Object.entries(museumCounts)
-    .sort((a, b) => b[1] - a[1])
-    .slice(0, 10)
-    .map(([museum]) => museum);
-
-  const padding = 80;
-  const availableWidth = cw() - padding * 2;
-  const availableHeight = ch() - padding * 2;
-
-  const numRows = 3; // altijd 3 rijen per museum
-  const museumSpacingX = availableWidth / top10.length;
-  const startX = padding + museumSpacingX / 2;
-  const startY = padding;
-
-  top10.forEach((museum, i) => {
-    const xCenter = startX + i * museumSpacingX;
-
-    // label boven de bolletjes
-    addClusterLabel(museum, xCenter, startY);
-
-    const group = bolletjes.filter(b => b.data.currentLocation === museum);
-    const n = group.length;
-
-    // grid per museum: 3 rijen, automatisch kolommen
-    const gridRows = numRows;
-    const gridCols = Math.ceil(n / gridRows);
-
-    const spacingX = Math.min(18, museumSpacingX / gridCols); // max 18 px
-    const spacingY = 18; // vaste rijafstand
-
-    group.forEach((b, index) => {
-      const col = index % gridCols;
-      const row = Math.floor(index / gridCols);
-
-      b.target = {
-        x: clamp(xCenter + (col - (gridCols - 1) / 2) * spacingX, padding, cw() - padding),
-        y: clamp(startY + 30 + row * spacingY, padding, ch() - padding) // 30 px onder label
-      };
-    });
-  });
-}
-
-
 
 
 
@@ -6532,13 +6469,12 @@ function showStoryText(index, showOverlay = true) {
     return;
   }
 
-if (showOverlay) {
-  overlay.textContent = storyText[index];
-  overlay.style.display = "block";
-} else {
-  overlay.style.display = "none";
-}
-
+  if (showOverlay) {
+  } else {
+    overlay.style.display = "none";
+    overlay.textContent = storyText[index];
+    overlay.style.display = "block"
+  }
 
   if (!autoPlay) return; // handmatige modus
 
