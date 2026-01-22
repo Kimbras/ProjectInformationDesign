@@ -103,7 +103,7 @@ button {
   display: flex;
   flex-direction: column;
   gap: 10px;
-  z-index: 1000;
+  z-index: 10;
   overflow-y: auto;
   font-family: "Banita", serif; 
   /*transform: translateX(100%); /* begin buiten scherm */
@@ -271,7 +271,40 @@ button {
   font-family: "Arial", sans-serif; /* body text sans-serif voor betere leesbaarheid */
 }
 
-/* sidebar altijd erboven en klikbaar */
-#sidebar {
-  z-index: 10;
+
+#top10Musea {
+  position: fixed;
+  top: 120px;
+  right: 30px;
+
+  width: min(300px, calc(100vw - 60px));
+  max-height: calc(100vh - 160px);
+
+  overflow-y: auto;
+
+  background: rgba(0, 0, 0, 0.75);
+  color: white;
+  padding: 16px;
+  border-radius: 12px;
+
+  display: none;
+  z-index: 1000;
+
+  box-sizing: border-box;
+}
+
+
+#top10Musea {
+  transition: opacity 0.3s ease, transform 0.3s ease;
+}
+
+#top10Musea.show {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+#top10Musea.hidden {
+  opacity: 0;
+  transform: translateY(10px);
+  pointer-events: none;
 }
