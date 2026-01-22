@@ -1,14 +1,73 @@
 /* =====================
    CANVAS SETUP
 ===================== */
+function hideColofon() {
+  colofonOverlay.style.display = "none";
+}
 
 const canvas = document.getElementById("canvas");
 const ctx = canvas.getContext("2d");
 const imageCache = {};
+const colofonOverlay = document.getElementById("colofonOverlay");
+const storyOverlay = document.getElementById("storyOverlay");
+
 
 let mode = "paintings"; // startmodus
 let inspirationPositionsInitialized = false;
 let currentView = "paintings"; // standaard view
+
+// helper functie om alle overlays te verbergen
+function hideOverlays() {
+  colofonOverlay.style.display = "none";
+  storyOverlay.style.display = "none";
+}
+
+// main buttons
+document.querySelectorAll(".mainBtn").forEach(btn => {
+  btn.addEventListener("click", () => {
+    currentMain = btn.dataset.group;
+
+    // standaard eerste sub button
+    const firstSub = document.querySelector(`.subBtn[data-group="${currentMain}"]`);
+    currentSub = firstSub?.dataset.view || "";
+
+    // ✅ verberg overlays als je op een andere knop klikt
+    if (btn.id !== "Colofon") hideOverlays();
+
+    setActiveButtons();
+    setActiveButton(currentMain);
+  });
+});
+
+// sub buttons
+document.querySelectorAll(".subBtn").forEach(btn => {
+  btn.addEventListener("click", () => {
+    currentSub = btn.dataset.view;
+
+    // ✅ verberg colofon als je op subknop klikt
+    hideOverlays();
+
+    // voer de sort functie uit
+    const sortFunction = btn.getAttribute("onclick");
+    if (sortFunction) eval(sortFunction);
+
+    setActiveButtons();
+  });
+});
+
+// Colofon button
+document.getElementById("Colofon").addEventListener("click", () => {
+  // overlay tonen
+  colofonOverlay.style.display = "block";
+  storyOverlay.style.display = "none";
+
+  mode = "colofon";
+
+  document.querySelectorAll(".mainBtn").forEach(btn => btn.classList.remove("active"));
+  document.getElementById("Colofon").classList.add("active");
+});
+
+
 
 function setActiveButton(view) {
   const mainBtns = document.querySelectorAll(".mainBtn");
@@ -131,6 +190,24 @@ document.getElementById("vanGoghBtn").addEventListener("click", () => {
   activeInspiration = null;
   clusterLabels = [];
 });
+
+document.getElementById("Colofon").addEventListener("click", () => {
+  // verberg andere content
+  storyOverlay.style.display = "none";
+
+  // toon colofon
+  colofonOverlay.style.display = "block";
+
+  // canvas blijft, maar mode verandert niet
+  mode = "colofon";
+
+  // active states netjes
+  document.querySelectorAll(".mainBtn").forEach(btn =>
+    btn.classList.remove("active")
+  );
+  document.getElementById("Colofon").classList.add("active");
+});
+
 
 
 
@@ -292,6 +369,9 @@ const letters = [
    { img: "img/5juni-1888-japanseinvloeden.png", data: {
       omschrijving: ".",
     }},
+     { img: "img/brief-9mei1873.png", data: {
+      omschrijving: ".",
+    }}, 
   { img: "img/brief.png", data: {
       omschrijving: ".",
     }}, 
