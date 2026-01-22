@@ -13,14 +13,14 @@
   <button id="toggleSidebar">☰</button> <!-- toggle-knop -->
 <h1>Filter het zelf</h1>
   <button id="showPaintingsBtn"class="mainBtn" data-group="schilderijen">Schilderijen</button>
-  <button id="showPaintingsBtn"class="subBtn" data-group="schilderijen" onclick="sortByYear()">Jaar</button>
-  <button id="showPaintingsBtn"class="subBtn" data-group="schilderijen" onclick="sortBySize()">Grootte</button>
-  <button id="showPaintingsBtn"class="subBtn" data-group="schilderijen" onclick="sortByMadeLocation()">Gemaakt in</button>
-  <button id="showPaintingsBtn"class="subBtn" data-group="schilderijen" onclick="sortByCurrentLocation()">Nu in museum</button>
-  <button id="vanGoghBtn" class="subBtn" data-group="schilderijen">Inspiratie Van Gogh</button>
+  <button class="subBtn" data-group="schilderijen" data-view="year" onclick="sortByYear()">Jaar</button>
+  <button class="subBtn" data-group="schilderijen" data-view="size" onclick="sortBySize()">Grootte</button>
+  <button class="subBtn" data-group="schilderijen" data-view="madeIn" onclick="sortByMadeLocation()">Gemaakt in</button>
+  <button class="subBtn" data-group="schilderijen" data-view="currentLocation" onclick="sortByCurrentLocation()">Nu in museum</button>
+  <button id="vanGoghBtn" class="subBtn" data-view="inspiration" data-group="schilderijen">Inspiratie Van Gogh</button>
 
-  <button id="showLettersBtn" class="mainBtn" data-group="brieven">Brieven</button>
-  <button id="showLettersBtn" class="subBtn" data-group="brieven" onclick="VanGogh()">Hoe dacht van Gogh</button>
+  <button id="showLettersBtn" class="mainBtn" data-group="brieven" onclick="VanGogh()">Brieven</button>
+   <button id="Colofon" class="mainBtn" onclick="VanGogh()">Colofon</button>
 </div>
 
 

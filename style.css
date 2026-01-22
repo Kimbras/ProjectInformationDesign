@@ -128,21 +128,34 @@ button {
 
 /* specifiek voor main buttons */
 #sidebar .mainBtn {
-  background: #c9b3ff;   /* standaardkleur */
+  background: #9fbcff;   /* standaardkleur */
   font-size: 16px;
+  color: white;
+}
+
+/* actieve main button */
+#sidebar .mainBtn.active {
+  background: #1172fb;
   color: white;
 }
 
 /* hover effect voor main buttons */
 #sidebar .mainBtn:hover {
+  background: #0a5fd5;
+}
+
+/* actieve sub-buttons */
+#sidebar .subBtn.active {
+  background: #5384c8;  /* blauw als actief */
+  color: white;
+}
+
+/* hover effect blijft anders */
+#sidebar .subBtn:hover {
   background: #426bb0;
 }
 
-/* actieve main button */
-#sidebar .mainBtn.active {
-  background: #5384c8;
-  color: white;
-}
+
 
 #storyOverlay {
   position: absolute;

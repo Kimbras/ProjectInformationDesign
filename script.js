@@ -8,6 +8,98 @@ const imageCache = {};
 
 let mode = "paintings"; // startmodus
 let inspirationPositionsInitialized = false;
+let currentView = "paintings"; // standaard view
+
+function setActiveButton(view) {
+  const mainBtns = document.querySelectorAll(".mainBtn");
+  mainBtns.forEach(btn => {
+    btn.classList.toggle("active", btn.dataset.view === view);
+  });
+
+  // laat juiste sub-buttons zien
+  document.querySelectorAll(".subBtn").forEach(sb => sb.style.display = "none");
+  const activeGroup = document.querySelector(`.mainBtn[data-view="${view}"]`)?.dataset.group;
+  if (activeGroup) {
+    document.querySelectorAll(`.subBtn[data-group="${activeGroup}"]`).forEach(sb => {
+      sb.style.display = "block";
+    });
+  }
+}
+
+let currentMain = "schilderijen";   // actieve main button
+let currentSub = "year";             // standaard actieve sub button
+
+function setActiveButtons() {
+  // main buttons
+  document.querySelectorAll(".mainBtn").forEach(btn => {
+    btn.classList.toggle("active", btn.dataset.group === currentMain);
+  });
+
+  // sub buttons
+  document.querySelectorAll(".subBtn").forEach(btn => {
+    const isActiveGroup = btn.dataset.group === currentMain;
+    btn.style.display = isActiveGroup ? "block" : "none";
+    btn.classList.toggle("active", isActiveGroup && btn.dataset.view === currentSub);
+  });
+}
+
+// main button click
+document.querySelectorAll(".mainBtn").forEach(btn => {
+  btn.addEventListener("click", () => {
+    currentMain = btn.dataset.group;
+
+    // standaard eerste sub button
+    const firstSub = document.querySelector(`.subBtn[data-group="${currentMain}"]`);
+    currentSub = firstSub?.dataset.view || "";
+
+    setActiveButtons();
+  });
+});
+
+// sub button click
+document.querySelectorAll(".subBtn").forEach(btn => {
+  btn.addEventListener("click", () => {
+    currentSub = btn.dataset.view;
+
+    // voer de sort functie uit
+    const sortFunction = btn.getAttribute("onclick");
+    if (sortFunction) eval(sortFunction);
+
+    setActiveButtons();
+  });
+});
+
+// initialiseer
+setActiveButtons();
+
+
+// sub button click
+document.querySelectorAll(".subBtn").forEach(btn => {
+  btn.addEventListener("click", () => {
+    currentSub = btn.dataset.view;
+
+    // roep eventueel sort functie aan
+    const sortFunction = btn.getAttribute("onclick");
+    if (sortFunction) eval(sortFunction);
+
+    setActiveButtons();
+  });
+});
+
+// initialiseer bij laden
+setActiveButtons();
+
+
+// bij klikken
+document.querySelectorAll(".mainBtn").forEach(btn => {
+  btn.addEventListener("click", () => {
+    currentView = btn.dataset.view;
+    setActiveButton(currentView);
+  });
+});
+
+// bij laden
+setActiveButton(currentView);
 
 
 function switchToPaintings() {
@@ -438,14 +530,6 @@ letters.forEach(l => {
 // Inspiratie kunstwerken
 const inspirationArt = [
   {
-    id: 1,
-    title: "Plum Park in Kameido",
-    artist: "Hiroshige",
-    category: "Japanse inspo",
-    description: "Van Gogh kopieerde de kunstwerken van Hiroshige omdat hij dit ook wil maken",
-    img: "https://upload.wikimedia.org/wikipedia/commons/a/a8/De_pruimenboomgaard_te_Kameido-Rijksmuseum_RP-P-1956-743.jpeg"
-  },
-  {
     id: 2,
     title: "Evening Shower at Atake and the Great Bridge",
     artist: "Hiroshige",
@@ -468,14 +552,6 @@ const inspirationArt = [
     category: "Japanse inspo",
     description: "Van Gogh kopieerde Eisen om hiervan te leren",
     img: "https://uitdekunstmarina.nl/wp-content/uploads/2018/05/13.Keisai-Eisen-Courtisane-1.jpg"
-  },
-  {
-    id: 5,
-    title: "Branch",
-    artist: "Katsushika Hokusai",
-    category: "Japanse inspo",
-    description: "Het omhoog kijken en fragmenten zijn typisch Hokusai",
-    img: "https://arthive.com/res/media/img/oy800/work/cea/182736@2x.webp"
   },
   {
     id: 6,
@@ -1083,7 +1159,7 @@ function placeVanGoghArt() {
     // X rechts van inspiratie + col
     v.x = startX + col * (VAN_WIDTH + gapX);
     // Y gelijk aan inspiratie-top of in een grid eronder
-    v.y = paddingY + row * (vBlockHeight + gapY);
+    v.y = activeInspiration.y + row * (vBlockHeight + gapY);
 
     rowHeight = Math.max(rowHeight, vBlockHeight + gapY);
 
@@ -1105,59 +1181,7 @@ function placeVanGoghArt() {
   canvas.width = Math.max(canvas.width, rightMost + paddingX);
 }
 
-function findFreePosition(w, h, placedRects) {
-  const cols = Math.floor(cw() / (w + 40));
-  const index = placedRects.length;
 
-  const x = 40 + (index % cols) * (w + 40);
-  const y = ch() / 2 + 60 + Math.floor(index / cols) * (h + 80);
-
-  return { x, y, w, h };
-}
-
-function getInspirationBottom() {
-  let bottom = 0;
-
-  inspirationArt.forEach(insp => {
-    const b = insp.y + insp.blockHeight;
-    if (b > bottom) bottom = b;
-  });
-
-  return bottom + 40; // extra ruimte
-}
-
-
-function findFreePositionVanGogh(w, h, placedRects, inspirationRects) {
-  const padding = 30;
-  const yStart = getInspirationBottom();
-  let tries = 0;
-
-  while (tries < 3000) {
-    const pos = {
-      x: padding + Math.random() * (cw() - w - padding * 2),
-      y: yStart + Math.random() * (ch() - yStart - h - padding),
-      w,
-      h
-    };
-
-    const overlapVanGogh = placedRects.some(p =>
-      rectsOverlap(pos, p)
-    );
-
-    const overlapInspiration = inspirationRects.some(p =>
-      rectsOverlap(pos, p)
-    );
-
-    if (!overlapVanGogh && !overlapInspiration) {
-      return pos;
-    }
-
-    tries++;
-  }
-
-  console.warn("⚠️ Geen vrije plek gevonden voor Van Gogh");
-  return { x: 40, y: yStart, w, h };
-}
 
 
 const INSP_SIZE = 120;
@@ -1194,11 +1218,6 @@ function drawVanGogh() {
   if (!inspirationPositionsInitialized) {
     placeInspirationArt();
   }
-
-  if (activeInspiration && !drawVanGogh.vanGoghPlaced) {
-    placeVanGoghArt();
-    drawVanGogh.vanGoghPlaced = true; // voorkomt dat ze bij elke frame opnieuw geplaatst worden
-}
   
   // ================================
   // 1. INSPIRATIE-SCHILDERIJEN
@@ -1275,6 +1294,20 @@ function drawVanGogh() {
       drawVanGogh.placedRects = [];
     }
 
+    if (activeInspiration) {
+    if (!drawVanGogh.vanGoghPlaced) {
+    placeVanGoghArt(); // bepaalt x/y
+    drawVanGogh.vanGoghPlaced = true;
+  }
+
+  related.forEach(v => {
+    // alleen tekenen
+    drawImageContain(ctx, v.imgObj, v.x, v.y, VAN_WIDTH, VAN_HEIGHT);
+    // tekst tekenen
+  });
+}
+
+
     related.forEach(v => {
       if (!v.imgObj) {
         v.imgObj = new Image();
@@ -1310,26 +1343,6 @@ function drawVanGogh() {
       const vBlockHeight =
         h + 8 + titleHeight + 4 + descHeight + 8;
         v.blockHeight = vBlockHeight;
-
-      // 📍 positie bepalen (NOOIT overlap)
-      if (v.x === undefined || v.y === undefined) {
-        const pos = findFreePositionVanGogh(
-          w,
-          vBlockHeight,
-          drawVanGogh.placedRects,
-          inspirationRects
-        );
-
-        v.x = pos.x;
-        v.y = pos.y;
-
-        drawVanGogh.placedRects.push({
-          x: v.x,
-          y: v.y,
-          w: w,
-          h: vBlockHeight
-        });
-      }
 
       // 🖼 afbeelding
       drawImageContain(ctx, v.imgObj, v.x, v.y, w, h);
@@ -2885,21 +2898,23 @@ const mainBtns = document.querySelectorAll(".mainBtn");
 
 mainBtns.forEach(btn => {
   btn.addEventListener("click", () => {
-    const group = btn.dataset.group;
+    const view = btn.dataset.view;
 
     // alle mainBtns resetten
     mainBtns.forEach(b => b.classList.remove("active"));
     btn.classList.add("active");
 
-    // alle sub-buttons verbergen
+    // laat sub-buttons van deze groep zien
     document.querySelectorAll(".subBtn").forEach(sb => sb.style.display = "none");
-
-    // alleen de sub-buttons van deze groep tonen
-    document.querySelectorAll(`.subBtn[data-group="${group}"]`).forEach(sb => {
+    document.querySelectorAll(`.subBtn[data-group="${btn.dataset.group}"]`).forEach(sb => {
       sb.style.display = "block";
     });
+
+    // active view opslaan zodat het blijft bij navigatie
+    currentView = view;  // globale variabele
   });
 });
+
 
 // verhaal vertellen
 
