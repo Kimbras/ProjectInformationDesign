@@ -217,11 +217,18 @@ const paintingsBtn = document.getElementById("paintingsBtn");
 const yearBtn = document.getElementById("yearBtn");
 const madeInBtn = document.getElementById("madeInBtn");
 const currentLocationBtn = document.getElementById("currentLocationBtn");
+document.querySelectorAll('.subBtn[data-view="currentLocation"]').forEach(btn => {
+  btn.addEventListener("click", () => {
+    hideOverlays();                     
+    sortByLocation("currentLocation");  
+    showTop10Musea();                   
+  });
+});
+
+
+
 
 let clusterLabels = [];
-
-
-
 
 const dpr = window.devicePixelRatio || 1;
 canvas.width = canvas.clientWidth * dpr;
@@ -317,6 +324,34 @@ function sortByLocation(field) {
       });
   });
 }
+
+function showTop10Musea() {
+  const museumCounts = {};
+
+  bolletjes.forEach(b => {
+    const museum = b.data.currentLocation?.trim();
+    if (!museum) return;
+
+    museumCounts[museum] = (museumCounts[museum] || 0) + 1;
+  });
+
+  const top10 = Object.entries(museumCounts)
+    .sort((a, b) => b[1] - a[1])
+    .slice(0, 10);
+
+  storyOverlay.innerHTML =
+    "<strong>Top 10 musea met meeste Van Gogh-schilderijen</strong><br><br>" +
+    top10
+      .map(([museum, count], i) =>
+        `${i + 1}. ${museum} – ${count} schilderij(en)`
+      )
+      .join("<br>");
+
+  storyOverlay.style.display = "block";
+}
+
+
+
 
 function sortBySize() {
   clusterLabels = [];
@@ -6207,7 +6242,22 @@ function sortBySize() {
   });
 }
 
+// Bereken top 10 musea
+const museumCounts = bolletjes.reduce((acc, b) => {
+  const museum = b.data.currentLocation;
+  acc[museum] = (acc[museum] || 0) + 1;
+  return acc;
+}, {});
 
+
+const topMuseums = Object.entries(museumCounts)
+  .sort((a, b) => b[1] - a[1])
+  .slice(0, 10);
+
+console.log("Top 10 musea met meeste Van Gogh-schilderijen:");
+topMuseums.forEach(([museum, count], index) => {
+  console.log(`${index + 1}. ${museum} - ${count} schilderij(en)`);
+});
 
 /* =====================
    TEKEN + ANIMEER
@@ -6325,7 +6375,6 @@ function drawHoverInfo() {
 }
 
 
-
 // Na 1 minuut alle bolletjes terug naar vrije staat
 setTimeout(() => {
   bolletjes.forEach(b => (b.target = null));
@@ -6355,14 +6404,38 @@ mainBtns.forEach(btn => {
       sb.style.display = "block";
     });
 
-    // active view opslaan zodat het blijft bij navigatie
-    currentView = view;  // globale variabele
+    // active view opslaan
+    currentView = view;
+
+    // **Top 10 musea laten zien bij museum**
+    if (view === "museum") {
+      const museumCounts = bolletjes.reduce((acc, b) => {
+        const museum = b.data.currentLocation || "Onbekend";
+        acc[museum] = (acc[museum] || 0) + 1;
+        return acc;
+      }, {});
+
+      const topMuseums = Object.entries(museumCounts)
+        .sort((a, b) => b[1] - a[1])
+        .slice(0, 10);
+
+      console.log("Top 10 musea met meeste Van Gogh-schilderijen:");
+      topMuseums.forEach(([museum, count], index) => {
+        console.log(`${index + 1}. ${museum} - ${count} schilderij(en)`);
+      });
+
+      // Als je het visueel wilt tonen in de overlay:
+      overlay.textContent =
+        "Top 10 musea:\n" +
+        topMuseums.map(([m,c],i) => `${i+1}. ${m} - ${c} schilderij(en)`).join("\n");
+      overlay.style.display = "block";
+    }
   });
 });
 
 
-// verhaal vertellen
 
+// verhaal vertellen
 
 const storyText = [
   //begin scherm
@@ -6443,6 +6516,7 @@ function showStoryText(index, showOverlay = true) {
         showStoryText(storyIndex);
       }, 3000); // 10 seconden pauze
     },
+
 
     // Gemaakt in (index 7) -> 10 seconden pauze
     8: () => {
