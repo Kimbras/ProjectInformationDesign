@@ -105,7 +105,7 @@ button {
   gap: 10px;
   z-index: 1000;
   overflow-y: auto;
-  font-family: "Gontserrat", serif; 
+  font-family: "Banita", serif; 
   /*transform: translateX(100%); /* begin buiten scherm */
   /*transition: transform 0.5s ease; /* animatie */
 }
@@ -179,13 +179,12 @@ button {
   line-height: 1.4;
   text-shadow: 2px 2px 8px rgba(0,0,0,0.7);
   z-index: 10;
-  font-family: "Gontserrat", serif;
+  font-family: "Banita", serif;
 }
 
 #storyOverlay.hidden {
   opacity: 0;
 }
-
 
 #canvasContainer {
   position: relative;
@@ -204,7 +203,7 @@ button {
   box-sizing: border-box;
   background: rgba(2, 6, 23, 0.95);
   color: #f1f1f1;
-  font-family: "Gontserrat", serif;
+  font-family: "Banita", serif;
   overflow-y: auto;
   display: none;
   z-index: 5;
@@ -219,16 +218,16 @@ button {
 #colofonOverlay h2 {
   font-size: 48px;
   margin-bottom: 1em;
-  font-family: "Gontserrat", serif;
+  font-family: "Banita", serif;
   font-weight: 700;
-  color: #e33d1c;
+  color: #e6ba03;
 }
 
 #colofonOverlay h3 {
   font-size: 28px;
   margin-top: 2em;
   margin-bottom: 0.5em;
-  font-family: "Gontserrat", serif;
+  font-family: "Banita", serif;
   color: #9fbcff;
 }
 
@@ -260,7 +259,7 @@ button {
 }
 
 #colofonOverlay ul li a:hover {
-  color: #e33d1c;
+  color: #e6ba03;
 }
 
 /* Kleine details */
