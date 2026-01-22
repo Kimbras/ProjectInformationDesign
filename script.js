@@ -6469,10 +6469,13 @@ function showStoryText(index, showOverlay = true) {
     return;
   }
 
-  if (showOverlay) {
-  } else {
-    overlay.style.display = "none";
-  }
+if (showOverlay) {
+  overlay.textContent = storyText[index];
+  overlay.style.display = "block";
+} else {
+  overlay.style.display = "none";
+}
+
 
   if (!autoPlay) return; // handmatige modus
 
@@ -6499,7 +6502,7 @@ function showStoryText(index, showOverlay = true) {
         l.lastTargetChange = performance.now();
       });
       bolletjes.forEach(b => b.target = null);
-      sortByCurrentLocation();
+      showTop10Musea();
       setTimeout(() => {
         storyIndex++;
         showStoryText(storyIndex);
