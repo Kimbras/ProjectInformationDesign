@@ -289,48 +289,93 @@ const KLEUREN = [
 const LETTER_MARGIN = 50;
 
 const letters = [
-  { img: "img/brief-2juli1873.png", data: {
-      omschrijving: "iedereen vond van gogh niks",
+   { img: "img/5juni-1888-japanseinvloeden.png", data: {
+      omschrijving: ".",
     }},
-  { img: "img/brief-3maart-1874.png", data: {
-      omschrijving: "iedereen vond van gogh niks",
+  { img: "img/brief.png", data: {
+      omschrijving: ".",
     }}, 
-  { img: "img/brief-3maart-1874I.png" , data: {
-      omschrijving: "iedereen vond van gogh niks",
+  { img: "img/brief1-26oct.png" , data: {
+      omschrijving: ".",
     }},
-  { img: "img/brief-5mei1873.png" , data: {
-      omschrijving: "iedereen vond van gogh niks",
+   { img: "img/brief-2juli1873.png" , data: {
+      omschrijving: ".",
     }},
-  { img: "img/brief-7augustus1873.png" , data: {
-      omschrijving: "iedereen vond van gogh niks",
+  { img: "img/brief-3maart-1874.png" , data: {
+      omschrijving: ".",
     }},
-  { img: "img/brief-7juli-1874-1r.png", data: {
-      omschrijving: "iedereen vond van gogh niks",
+  { img: "img/brief-4januari-1875.png", data: {
+      omschrijving: ".",
     }},
-  { img: "img/brief-7juli-1874-1v.png", data: {
-      omschrijving: "iedereen vond van gogh niks",
+{ img: "img/brief-5mei1873.png" , data: {
+      omschrijving: ".",
     }},
-  { img: "img/brief-7juli-1874-2r.png" , data: {
-      omschrijving: "iedereen vond van gogh niks",
+ { img: "img/brief-7augustus1873.png" , data: {
+      omschrijving: ".",
     }},
-  { img: "img/brief-7juli-1874-3r.png" , data: {
-      omschrijving: "iedereen vond van gogh niks",
+ { img: "img/brief-7juli-1874-1r.png" , data: {
+      omschrijving: ".",
     }},
-  { img: "img/brief-7juli-1874-4r.png" , data: {
-      omschrijving: "iedereen vond van gogh niks",
+ { img: "img/brief-7juli-1874-2r.png", data: {
+      omschrijving: ".",
     }},
-  { img: "img/brief-9feb-1874.png", data: {
-      omschrijving: "iedereen vond van gogh niks",
+  { img: "img/brief-7juli-1874-3r.png", data: {
+      omschrijving: ".",
     }},
-  { img: "img/brief-9feb-1874I.png", data: {
-      omschrijving: "iedereen vond van gogh niks",
+   { img: "img/brief-7juli-1874-4r.png", data: {
+      omschrijving: ".",
     }},
-  { img: "img/brief-9mei1873.png", data: {
-      omschrijving: "iedereen vond van gogh niks",
+  { img: "img/brief-9feb-1874.png" , data: {
+      omschrijving: ".",
     }},
-  { img: "img/brief-10juli-1874.png" , data: {
-      omschrijving: "iedereen vond van gogh niks",
+    { img: "img/brief-9feb-18742.png", data: {
+      omschrijving: '.',
+    }},
+    { img: "img/brief-10aug-1874.png" , data: {
+      omschrijving: ".",
+    }},
+     { img: "img/brief-10aug-1874-1v.png" , data: {
+      omschrijving: ".",
+    }},
+      { img: "img/brief-10juli-1874.png" , data: {
+      omschrijving: ".",
+    }},
+    { img: "img/brief-10maart-1875.png", data: {
+      omschrijving: ".",
+    }},
+    { img: "img/brief-13december.png", data: {
+      omschrijving: ".",
+    }},
+    { img: "img/brief-13juni1873.png" , data: {
+      omschrijving: ".",
+    }},
+     { img: "img/brief-13sept1873.png" , data: {
+      omschrijving: ".",
+    }},
+      { img: "img/brief-13sept22.png" , data: {
+      omschrijving: ".",
+    }},
+     { img: "img/brief-japansekunst.png" , data: {
+      omschrijving: "Zie je hoe brutaal die idioten in Dordrecht zijn, zie je hoe zelfvoldaan ze zijn, ze willen zich verlagen tot Gas & Pissaro waarvan ze trouwens nog nooit iets gezien hebben, net zomin als van de anderen. Vijf maar het is een heel goed teken dat de jongeren woedend zijn, dat bewijst misschien dat er oude mensen zijn die er goed over gesproken hebben. Wat betreft in het zuiden blijven, ook al is het duurder kom op, we houden van Japanse schilderkunst, we zijn erdoor beïnvloed alle impressionisten hebben dat gemeen en we zouden niet naar Japan gaan, d.w.z. naar het equivalent van Japan, het zuiden. Ik geloof dus dat de toekomst van de nieuwe kunst toch in het zuiden ligt. Het is alleen geen goede politiek om daar alleen te blijven, terwijl twee of drie elkaar zouden kunnen helpen om van weinig te leven.",
+    }},
+      { img: "img/broederliefde.png", data: {
+      omschrijving: "Ik heb eigenlijk geen vriend behalve U en als ik beroerd ben zijt gij me altijd in de gedachten - Aan Theo vanuit Den Haag, 22 juli 1883",
+    }},
+    { img: "img/japansekunstbezit-bit.png", data: {
+      omschrijving: "Als het mogelijk was alle Japanse prenten die we thuis hebben zijn prachtig zou het beter zijn om de hele voorraad terug te nemen. We krijgen ze zo goedkoop en we kunnen er zoveel kunstenaars blij mee maken, dat we toch maar beter de gunst van Père Bing kunnen behouden.",
+    }},
+     { img: "img/japansoog.png", data: {
+      omschrijving: "Ik benijd de Japanners om de extreme helderheid die alles in hun werk heeft. Het is nooit saai en lijkt nooit haastig te worden . Hun werk is net zo eenvoudig als ademhalen, en ze doen een figuur met een paar zelfverzekerde slagen met hetzelfde gemak alsof het zo simpel is als het dichtknopen van je vest.",
+    }}, 
+     { img: "img/workbasedonjapanese-bit.png", data: {
+      omschrijving: "Al mijn werk is tot op zekere hoogte gebaseerd op Japanse kunst...",
+    }},
+     { img: "img/vangogh-air.png", data: {
+      omschrijving: "Parijs is Parijs, er is maar één Parijs, en hoe zwaar het leven hier ook mag zijn, en als het nog erger en zwaarder zou worden de Franse lucht verheldert je geest en doet je goed enorm veel goed.",
     }}
+
+   
+
 ].map(l => ({
   ...l,
   x: Math.random() * canvas.width,
