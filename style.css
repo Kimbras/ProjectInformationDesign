@@ -1,6 +1,6 @@
 @font-face {
-  font-family: "Timeless";
-  src: url("fonts/Gontserrat-Regular.ttf") format("truetype");
+  font-family: "Banita";
+  src: url("fonts/Banita.ttf") format("truetype");
   font-weight: normal;
   font-style: normal;
 }
@@ -10,7 +10,7 @@ html, body {
   padding: 0;
   overflow: hidden;
   background: #020617;
-  font-family: "Gontserrat", serif;
+  font-family: "Banita", serif;
   height: 100%;
 }
 
@@ -75,7 +75,7 @@ button {
   margin-left: 30px;  /* reserveer ruimte voor sidebar */
   display: block;
   background: #020617;
-  font-family: "Gontserrat", serif;
+  font-family: "Banita", serif;
 }
 
 #canvasContainer{

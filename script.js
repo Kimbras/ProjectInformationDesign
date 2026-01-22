@@ -10,7 +10,7 @@ const ctx = canvas.getContext("2d");
 const imageCache = {};
 const colofonOverlay = document.getElementById("colofonOverlay");
 const storyOverlay = document.getElementById("storyOverlay");
-
+colofonOverlay.style.display = "none"; // start verborgenconst colofonOverlay
 
 let mode = "paintings"; // startmodus
 let inspirationPositionsInitialized = false;
@@ -6365,11 +6365,29 @@ mainBtns.forEach(btn => {
 
 
 const storyText = [
-  "Welkom in het verhaal van Van Gogh.",
-  "Hier zie je zijn vroege werken, klein en ingetogen.",
-  "In de loop der jaren worden de werken kleurrijker en expressiever.",
-  "We volgen zijn reizen door Frankrijk en Nederland.",
-  "Kijk hoe de locaties van de schilderijen clusters vormen in het museum."
+  //begin scherm
+  "In de sterren zie je de werken van Gogh die verspreid zijn over de wereld en musea.",
+  "Daarnaast zie je waar de werken zijn gemaakt tijdens zijn leven.",
+
+  // nu in museum
+  "Jo van gogh-bonger verkocht een aantal werken van van Gogh strategisch over verschillende delen van de wereld",
+  "om zo de naamsbekendheid van de schilderijen groter te maken.",
+  " In haar eigen woorden 'Het is een offer voor Vincents roem'.",
+
+  // gemaakt in
+    "Van Gogh was een reizend, lusteloze kunstenaar die erkenning zocht maar niet vond tijdens zijn leven.",
+  "Nederland had weinig meer te bieden en hij zocht inspiratie in de natuur van Zuid-Frankrijk en wilde een kunstcollectief creëren. ",
+  "Hij had geen plannen om weer terug te keren naar Nederland.",
+
+    // Brieven pagina
+    "In de brieven zie je zijn worstelingen met zichzelf en hoe hij zich voelt over zijn vervreemding.",
+  "Je ziet bijv. verder stukken waarin hij duidelijk maakt hoe hij geïnspireerd is door de Japanse kunst.",
+  "Neem een kijkje door de brieven en kruip in het leven van Gogh.",
+    "Deze brieven zijn essentieel geweest voor de branding van het merk van Gogh,",
+    "het biedt een inkijkje in het gedachtegang van Gogh en zorgde zo voor het vergroten van de bekendheid en mythevorming wereldwijd.",
+     "Dit allemaal verzameld en uitgebracht door Jo van gogh-bonger",
+      "en de brieven worden steeds opnieuw onder de aandacht gebracht om van Gogh tot de verbeelding te laten spreken.",
+      "Kijk zelf naar de brieven, je kan erop klikken voor meer informatie.",
 ];
 
 let storyIndex = 0;
@@ -6381,12 +6399,8 @@ let autoPlay = true; // fase 1: automatisch afspelen
 function showStoryText(index) {
   if (index >= storyText.length) {
     overlay.style.display = "none";
-
-  // Einde van automatisch verhaal: sidebar tonen
-  sidebar.classList.add("show"); // <- hier verschijnt je sidebar
-    resizeCanvas(); // 👈 deze is essentieel
-
-    // Na automatisch afspelen: gebruiker kan zelf klikken
+    sidebar.classList.add("show"); // sidebar tonen
+    resizeCanvas();
     autoPlay = false;
     overlay.addEventListener("click", manualClickHandler);
     return;
@@ -6394,33 +6408,76 @@ function showStoryText(index) {
 
   overlay.textContent = storyText[index];
   overlay.style.display = "block";
-  
-if (autoPlay) {
-    // Speciaal voor de tweede zin (index 1)
-    if (index === 1) {
-      // 1 Laat de tekst even zien
-      setTimeout(() => {
-        overlay.style.display = "none";
 
-        // 2 Laat tijdlijncluster zien
-        sortByYear();
+  if (!autoPlay) return; // als we in handmatige modus zijn, geen auto-flow
 
-        // 3 Wacht even (bijv. 3 seconden) zodat de gebruiker het kan zien
-        setTimeout(() => {
-          // 4 Ga door met de volgende tekst
-          storyIndex++;
-          showStoryText(storyIndex);
-        }, 3000);
-      }, 4000); // 4 seconden tekst lezen
-    } else {
+  // Hier definieer je speciale pauzes / functies per index
+  const specialPauses = {
+    // na intro (eerste 2 zinnen) -> tijdlijn cluster
+    2: () => {
+      overlay.style.display = "none";
+      sortByYear(); // laat tijdlijncluster zien
       setTimeout(() => {
-        overlay.style.display = "none";
+        resetBolletjes();
         storyIndex++;
         showStoryText(storyIndex);
-      }, 4000);
+      }, 3000); // 3 seconden wachten
+    },
+
+    // Nu in museum (index 2,3,4) -> 10 seconden pauze
+    4: () => {
+      overlay.style.display = "none";
+      // bolletjes weer vrij laten bewegen
+      letters.forEach(l => {
+        l.targetX = LETTER_MARGIN + Math.random() * (cw() - LETTER_MARGIN * 2);
+        l.targetY = LETTER_MARGIN + Math.random() * (ch() - LETTER_MARGIN * 2);
+        l.lastTargetChange = performance.now();
+      });
+      bolletjes.forEach(b => b.target = null);
+
+      setTimeout(() => {
+        storyIndex++;
+        showStoryText(storyIndex);
+      }, 10000); // 10 seconden pauze
+    },
+
+    // Gemaakt in (index 7) -> 10 seconden pauze
+    7: () => {
+      overlay.style.display = "none";
+      letters.forEach(l => {
+        l.targetX = LETTER_MARGIN + Math.random() * (cw() - LETTER_MARGIN * 2);
+        l.targetY = LETTER_MARGIN + Math.random() * (ch() - LETTER_MARGIN * 2);
+        l.lastTargetChange = performance.now();
+      });
+      bolletjes.forEach(b => b.target = null);
+
+      setTimeout(() => {
+        storyIndex++;
+        showStoryText(storyIndex);
+      }, 10000); // 10 seconden pauze
+    },
+
+    // Brieven pagina (laat gebruiker zelf klikken)
+    10: () => {
+      overlay.style.display = "block";
+      autoPlay = false; // stop automatische flow
+      overlay.addEventListener("click", manualClickHandler);
     }
+  };
+
+  // Check of we een speciale pauze hebben voor deze index
+  if (specialPauses[index]) {
+    specialPauses[index]();
+  } else {
+    // normale flow: 4 seconden per zin
+    setTimeout(() => {
+      overlay.style.display = "none";
+      storyIndex++;
+      showStoryText(storyIndex);
+    }, 4000);
   }
 }
+
 
 // Handmatige klik (fase 2)
 function manualClickHandler() {
@@ -6437,5 +6494,19 @@ function manualClickHandler() {
 showStoryText(storyIndex);
 
 draw(); // onderaan je script
+
+function resetBolletjes() {
+  // bolletjes weer vrij laten bewegen
+  bolletjes.forEach(b => {
+    b.target = null;           
+    b.targetX = Math.random() * cw();  
+    b.targetY = Math.random() * ch();
+    b.lastTargetChange = performance.now(); 
+  });
+
+  // overlay met tekst verbergen
+  overlay.style.display = "none";
+}
+
 
 
