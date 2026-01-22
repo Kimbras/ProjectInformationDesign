@@ -567,7 +567,39 @@ const inspirationArt = [
     description: "Van Gogh had veel respect voor Rembrandt",
     img: "https://upload.wikimedia.org/wikipedia/commons/3/34/Labours_of_the_fields-Woman_shearing_sheep_%28Millet%29.jpg"
   },
-  
+  {
+  id: 17,
+  title: "The Drinkers",
+  artist: "Honoré Daumier",
+  category: "nagetekend",
+  description: "Daumiers sociale thema’s beïnvloedden Van Goghs vroege werk.",
+  img: "https://upload.wikimedia.org/wikipedia/commons/9/95/Daumier_The_Drinkers.jpg",
+},
+  {
+  id: 18,
+  title: "The Woodcutter",
+  artist: "Jean-François Millet",
+  category: "nagetekend",
+  description: "Van Gogh nam Millets arbeiders en boeren als belangrijk voorbeeld.",
+  img: "https://collectionapi.metmuseum.org/api/collection/v1/iiif/337799/761285/main-image",
+},
+{
+  id: 19,
+  title: "The Pietà",
+  artist: "Eugène Delacroix",
+  category: "nagetekend",
+  description: "Van Gogh bewonderde Delacroix’ kleurgebruik en emotionele kracht.",
+  img: "https://www.eugene-delacroix.com/assets/img/paintings/pieta.jpg",
+},
+{
+  id: 20,
+  title: "The Good Samaritan",
+  artist: "Eugène Delacroix",
+  category: "nagetekend",
+  description: "Van Gogh maakte meerdere studies gebaseerd op dit werk van Delacroix.",
+  img: "https://upload.wikimedia.org/wikipedia/commons/d/de/Honor%C3%A9_Daumier_%281808-1879%29_-_The_Good_Samaritan_-_35.215_-_Burrell_Collection.jpg",
+}
+
 ];
 
 
@@ -611,16 +643,6 @@ const vanGoghArt = [
     museum: "Metropolitan Museum of Art",
     size: "—",
     img: "https://data.spinque.com/iiif/2/vangoghworldwide%2Fdavidbrooks%2Ffull%2FF0488_x01.jpg/full/!682,440/0/default.jpg",
-    inspirationId: 3
-  },
-  {
-    id: 3,
-    title: "De slaapkamer",
-    year: 1888,
-    madeIn: "Arles",
-    museum: "Van Gogh Museum",
-    size: "34 × 55 cm",
-    img: "https://upload.wikimedia.org/wikipedia/commons/7/76/Vincent_van_Gogh_-_De_slaapkamer_-_Google_Art_Project.jpg",
     inspirationId: 3
   },
   {
@@ -713,12 +735,39 @@ const vanGoghArt = [
     img: "https://upload.wikimedia.org/wikipedia/commons/0/0c/Vincent_van_Gogh_-_The_Good_Samaritan.jpg",
     inspirationId: 20
   }
+
 ];
 
 
 /* =====================
    inspiratie van van gogh
 ===================== */
+function drawImageFixedWidth(ctx, img, x, y, targetW) {
+  const ratio = img.naturalHeight / img.naturalWidth;
+  const h = targetW * ratio;
+
+  ctx.drawImage(img, x, y, targetW, h);
+
+  return h; // belangrijk: echte hoogte teruggeven
+}
+
+function drawImageContain(ctx, img, x, y, maxW, maxH) {
+  const ratio = Math.min(
+    maxW / img.naturalWidth,
+    maxH / img.naturalHeight
+  );
+
+  const w = img.naturalWidth * ratio;
+  const h = img.naturalHeight * ratio;
+
+  const offsetX = x + (maxW - w) / 2;
+  const offsetY = y + (maxH - h) / 2;
+
+  ctx.drawImage(img, offsetX, offsetY, w, h);
+
+  return { w, h };
+}
+
 function resizeCanvasToContent() {
   let bottom = 0;
 
@@ -825,50 +874,56 @@ function placeInspirationArt() {
   const paddingX = 40;
   const paddingY = 40;
   const gapX = 40;
-  const gapY = 40;
+  const gapY = 60;
 
-  const cols = Math.max(1, Math.floor((cw() - paddingX * 2) / (INSP_SIZE + gapX)));
-  let col = 0;
-  let row = 0;
-  let rowHeight = 0;
+  const cellWidth = INSP_SIZE + gapX;
+  const cols = Math.max(
+    1,
+    Math.floor((cw() - paddingX * 2) / cellWidth)
+  );
 
-  inspirationArt.forEach(insp => {
-    // afbeelding laden
+  inspirationArt.forEach((insp, index) => {
+    // image preload
     if (!insp.imgObj) {
       insp.imgObj = new Image();
       insp.imgObj.src = insp.img;
     }
 
-    // bereken blockHeight (inclusief tekst)
+    // teksthoogtes meten
     ctx.font = "bold 13px Inter, Arial, sans-serif";
     const titleHeight = measureWrappedText(ctx, insp.title, INSP_SIZE, 15);
+
     ctx.font = "12px Inter, Arial, sans-serif";
     const descHeight = measureWrappedText(ctx, insp.description, INSP_SIZE, 15);
+
     const artistHeight = 14;
 
-    insp.blockHeight = INSP_SIZE + 16 + titleHeight + 4 + artistHeight + 4 + descHeight + 10;
+    insp.blockHeight =
+      INSP_SIZE +
+      16 +
+      titleHeight +
+      4 +
+      artistHeight +
+      4 +
+      descHeight +
+      10;
 
-    // grid positie
-    insp.x = paddingX + col * (INSP_SIZE + gapX);
-    insp.y = paddingY + row * rowHeight;
+    const col = index % cols;
+    const row = Math.floor(index / cols);
 
-    rowHeight = Math.max(rowHeight, insp.blockHeight + gapY);
-    col++;
-
-    if (col >= cols) {
-      col = 0;
-      row++;
-      rowHeight = 0;
-    }
+    insp.x = paddingX + col * cellWidth;
+    insp.y = paddingY + row * (insp.blockHeight + gapY);
   });
 
-  // canvas hoogte aanpassen
-  let bottom = 0;
-  inspirationArt.forEach(i => bottom = Math.max(bottom, i.y + i.blockHeight));
-  canvas.height = bottom + paddingY;
+  // canvas hoogte correct zetten
+  const bottom = Math.max(
+    ...inspirationArt.map(i => i.y + i.blockHeight)
+  );
 
+  canvas.height = bottom + paddingY;
   inspirationPositionsInitialized = true;
 }
+
 
 function placeVanGoghArt() {
   if (!activeInspiration) return;
@@ -929,8 +984,6 @@ function placeVanGoghArt() {
   const rightMost = Math.max(...related.map(v => v.x + VAN_WIDTH));
   canvas.width = Math.max(canvas.width, rightMost + paddingX);
 }
-
-
 
 function findFreePosition(w, h, placedRects) {
   const cols = Math.floor(cw() / (w + 40));
@@ -1159,7 +1212,8 @@ function drawVanGogh() {
       }
 
       // 🖼 afbeelding
-      ctx.drawImage(v.imgObj, v.x, v.y, w, h);
+      drawImageContain(ctx, v.imgObj, v.x, v.y, w, h);
+
 
       ctx.textAlign = "center";
 
