@@ -6387,7 +6387,7 @@ const storyText = [
     "het biedt een inkijkje in het gedachtegang van Gogh en zorgde zo voor het vergroten van de bekendheid en mythevorming wereldwijd.",
      "Dit allemaal verzameld en uitgebracht door Jo van gogh-bonger",
       "en de brieven worden steeds opnieuw onder de aandacht gebracht om van Gogh tot de verbeelding te laten spreken.",
-      "Kijk zelf naar de brieven, je kan erop klikken voor meer informatie.",
+      "Kijk zelf naar de brieven, je kan erop klikken voor meer informatie."
 ];
 
 let storyIndex = 0;
@@ -6395,8 +6395,7 @@ const overlay = document.getElementById("storyOverlay");
 let autoHideTimeout = null;
 let autoPlay = true; // fase 1: automatisch afspelen
 
-// Functie om tekst te tonen
-function showStoryText(index) {
+function showStoryText(index, showOverlay = true) {
   if (index >= storyText.length) {
     overlay.style.display = "none";
     sidebar.classList.add("show"); // sidebar tonen
@@ -6406,10 +6405,14 @@ function showStoryText(index) {
     return;
   }
 
-  overlay.textContent = storyText[index];
-  overlay.style.display = "block";
+  if (showOverlay) {
+    overlay.textContent = storyText[index];
+    overlay.style.display = "block";
+  } else {
+    overlay.style.display = "none";
+  }
 
-  if (!autoPlay) return; // als we in handmatige modus zijn, geen auto-flow
+  if (!autoPlay) return; // handmatige modus
 
   // Hier definieer je speciale pauzes / functies per index
   const specialPauses = {
@@ -6421,11 +6424,11 @@ function showStoryText(index) {
         resetBolletjes();
         storyIndex++;
         showStoryText(storyIndex);
-      }, 3000); // 3 seconden wachten
+      }, 6000); // 3 seconden wachten
     },
 
     // Nu in museum (index 2,3,4) -> 10 seconden pauze
-    4: () => {
+    5: () => {
       overlay.style.display = "none";
       // bolletjes weer vrij laten bewegen
       letters.forEach(l => {
@@ -6434,15 +6437,15 @@ function showStoryText(index) {
         l.lastTargetChange = performance.now();
       });
       bolletjes.forEach(b => b.target = null);
-
+      sortByCurrentLocation();
       setTimeout(() => {
         storyIndex++;
         showStoryText(storyIndex);
-      }, 10000); // 10 seconden pauze
+      }, 3000); // 10 seconden pauze
     },
 
     // Gemaakt in (index 7) -> 10 seconden pauze
-    7: () => {
+    8: () => {
       overlay.style.display = "none";
       letters.forEach(l => {
         l.targetX = LETTER_MARGIN + Math.random() * (cw() - LETTER_MARGIN * 2);
@@ -6450,17 +6453,18 @@ function showStoryText(index) {
         l.lastTargetChange = performance.now();
       });
       bolletjes.forEach(b => b.target = null);
-
+      sortByMadeLocation();
       setTimeout(() => {
         storyIndex++;
         showStoryText(storyIndex);
-      }, 10000); // 10 seconden pauze
+      }, 3000); // 10 seconden pauze
     },
 
     // Brieven pagina (laat gebruiker zelf klikken)
-    10: () => {
+    16: () => {
       overlay.style.display = "block";
       autoPlay = false; // stop automatische flow
+      VanGogh()
       overlay.addEventListener("click", manualClickHandler);
     }
   };
@@ -6496,17 +6500,28 @@ showStoryText(storyIndex);
 draw(); // onderaan je script
 
 function resetBolletjes() {
-  // bolletjes weer vrij laten bewegen
+  // Overlay verbergen
+  overlay.style.display = "none";
+
+  // Bolletjes weer vrij laten bewegen
   bolletjes.forEach(b => {
-    b.target = null;           
-    b.targetX = Math.random() * cw();  
-    b.targetY = Math.random() * ch();
-    b.lastTargetChange = performance.now(); 
+    b.target = null;
+
+    // random nieuwe home positie
+    b.homeX = Math.random() * cw();
+    b.homeY = Math.random() * ch();
   });
 
-  // overlay met tekst verbergen
-  overlay.style.display = "none";
+  // Letters vrij laten bewegen
+  if (letters) {
+    letters.forEach(l => {
+      l.targetX = LETTER_MARGIN + Math.random() * (cw() - LETTER_MARGIN * 2);
+      l.targetY = LETTER_MARGIN + Math.random() * (ch() - LETTER_MARGIN * 2);
+      l.lastTargetChange = performance.now();
+    });
+  }
 }
+
 
 
 
