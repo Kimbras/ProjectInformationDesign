@@ -734,6 +734,126 @@ const vanGoghArt = [
     size: "30.5 × 39.5 cm",
     img: "https://upload.wikimedia.org/wikipedia/commons/0/0c/Vincent_van_Gogh_-_The_Good_Samaritan.jpg",
     inspirationId: 20
+  },
+  {
+    id: 9,
+    title: "De sterrennacht",
+    year: 1888,
+    location: "Arles",
+    museum: "Musée d'Orsay",
+    size: "35 x 47",
+    img: "https://upload.wikimedia.org/wikipedia/commons/0/01/Vincent_van_Gogh_-_Starry_Night_-_Google_Art_Project.jpg",
+    inspirationId: 9
+  },
+  {
+    id: 10,
+    title: "Breton woman and children",
+    year: 1888,
+    location: "Arles",
+    museum: "Galleria d'Arte Moderna",
+    size: "60 x 73",
+    img: "https://upload.wikimedia.org/wikipedia/commons/2/2c/Breton_Women.jpg",
+    inspirationId: 10
+  },
+  {
+    id: 11,
+    title: "Schaal met aardappels",
+    year: 1888,
+    location: "Arles",
+    museum: "Kröller-Müller Museum",
+    size: "35 x 47",
+    img: "https://data.spinque.com/iiif/2/vangoghworldwide%2Fkmm%2FKM%20108.951.jpg/full/!682,440/0/default.jpg",
+    inspirationId: 11
+  },
+  {
+    id: 12,
+    title: "De gevangenisbinnenplaats (naar Gustave Doré)",
+    year: 1890,
+    location: "Saint-Rémy",
+    museum: "Pushkin State Museum of Fine Arts",
+    size: "19 x 27.5",
+    img: "https://upload.wikimedia.org/wikipedia/commons/9/9e/Vincent_Willem_van_Gogh_037.jpg",
+    inspirationId: 12
+  },
+  {
+    id: 13,
+    title: "Cows",
+    year: 1890,
+    location: "Auvers-sur-Oise",
+    museum: "Palais des Beaux-Arts de Lille",
+    size: "55 x 65",
+    img: "https://upload.wikimedia.org/wikipedia/commons/e/e8/Lille_Pdba_van_gogh_vaches.jpg",
+    inspirationId: 13
+  },
+  {
+    id: 14,
+    title: "De zaaier",
+    year: 1888,
+    location: "Arles",
+    museum: "Villa Flora",
+    size: "31 x 29.5",
+    img: "https://data.spinque.com/iiif/2/vangoghworldwide%2Fdavidbrooks%2Ffull%2FF1442_x01.jpg/full/!682,440/0/default.jpg",
+    inspirationId: 14
+  },
+  {
+    id: 15,
+    title: "De opwekking van Lazarus (naar Rembrandt)",
+    year: 1890,
+    location: "Saint-Rémy",
+    museum: "Van Gogh Museum",
+    size: "33.5 x 48.5",
+    img: "https://upload.wikimedia.org/wikipedia/commons/9/9e/Vincent_van_Gogh_-_The_raising_of_Lazarus_%28after_Rembrandt%29_-_Google_Art_Project.jpg",
+    inspirationId: 15
+  },
+  {
+    id: 16,
+    title: "De schapenhoedster (naar Millet)",
+    year: 1889,
+    location: "Saint-Rémy",
+    museum: "Tel Aviv Museum",
+    size: "33 x 50",
+    img: "https://upload.wikimedia.org/wikipedia/commons/8/8c/De_schapenscheerster_%28naar_Millet%29_-_s0042V1962_-_Van_Gogh_Museum.jpg",
+    inspirationId: 16
+  },
+  {
+    id: 17,
+    title: "De eerste stapjes (naar Millet)",
+    year: 1890,
+    location: "Saint-Rémy",
+    museum: "Metropolitan Museum of Art",
+    size: "35.5 x 55.5",
+    img: "https://vggallery.com/painting/f_0668.jpg",
+    inspirationId: 17
+  },
+  {
+    id: 18,
+    title: "De houthakker (naar Millet)",
+    year: 1890,
+    location: "Saint-Rémy",
+    museum: "Van Gogh Museum",
+    size: "28.5 x 39.5",
+    img: "https://upload.wikimedia.org/wikipedia/commons/8/87/Van_Gogh_-_Der_Holzhacker_%28nach_Millet%29.jpeg",
+    inspirationId: 18
+  },
+  {
+    id: 19,
+    title: "Pietà (naar Delacroix)",
+    year: 1889,
+    location: "Saint-Rémy",
+    museum: "Van Gogh Museum",
+    size: "27.8 x 36.5",
+    img: "https://upload.wikimedia.org/wikipedia/commons/8/82/Vincent_Willem_van_Gogh_083.jpg",
+    inspirationId: 19
+  },
+  {
+    id: 20,
+    title: "De Barmhartige Samaritaan (naar Delacroix)",
+    year: 1890,
+    location: "Saint-Rémy",
+    museum: "Kröller-Müller Museum",
+    size: "30.5 x 39.5",
+    img: "https://upload.wikimedia.org/wikipedia/commons/7/76/Vincent_Willem_van_Gogh_022.jpg",
+    inspirationId: 20
   }
 
 ];
