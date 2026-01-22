@@ -818,85 +818,116 @@ function rectsOverlap(a, b) {
   );
 }
 
+const VAN_WIDTH = 180; // Van Gogh afbeeldingen
+const VAN_HEIGHT = 140;
+
 function placeInspirationArt() {
   const paddingX = 40;
   const paddingY = 40;
   const gapX = 40;
   const gapY = 40;
 
-  const size = INSP_SIZE;
+  const cols = Math.max(1, Math.floor((cw() - paddingX * 2) / (INSP_SIZE + gapX)));
+  let col = 0;
+  let row = 0;
+  let rowHeight = 0;
 
-  // eerst alle blokhoogtes berekenen
   inspirationArt.forEach(insp => {
+    // afbeelding laden
     if (!insp.imgObj) {
       insp.imgObj = new Image();
       insp.imgObj.src = insp.img;
     }
 
-    const fontBackup = ctx.font;
-
+    // bereken blockHeight (inclusief tekst)
     ctx.font = "bold 13px Inter, Arial, sans-serif";
-    const titleHeight = measureWrappedText(ctx, insp.title, size, 15);
-
+    const titleHeight = measureWrappedText(ctx, insp.title, INSP_SIZE, 15);
     ctx.font = "12px Inter, Arial, sans-serif";
+    const descHeight = measureWrappedText(ctx, insp.description, INSP_SIZE, 15);
     const artistHeight = 14;
 
-    const descriptionHeight = measureWrappedText(ctx, insp.description, size, 15);
+    insp.blockHeight = INSP_SIZE + 16 + titleHeight + 4 + artistHeight + 4 + descHeight + 10;
 
-    ctx.font = fontBackup;
-
-    const blockHeight =
-      size +        // afbeelding
-      16 +          // ruimte onder afbeelding
-      titleHeight +
-      4 +
-      artistHeight +
-      4 +
-      descriptionHeight +
-      10;
-
-    insp.blockHeight = blockHeight;
-  });
-
-  // bepalen hoeveel kolommen passen
-  const cols = Math.max(1, Math.floor((cw() - paddingX * 2) / (size + gapX)));
-
-  let col = 0;
-  let row = 0;
-  let rowHeight = 0; // hoogte van de huidige rij
-
-  for (let i = 0; i < inspirationArt.length; i++) {
-    const insp = inspirationArt[i];
-
-    // x positie
-    insp.x = paddingX + col * (size + gapX);
-
-    // y positie = start van rij + padding boven
+    // grid positie
+    insp.x = paddingX + col * (INSP_SIZE + gapX);
     insp.y = paddingY + row * rowHeight;
 
-    // update rowHeight naar hoogste blok in deze rij
     rowHeight = Math.max(rowHeight, insp.blockHeight + gapY);
-
     col++;
 
-    // nieuwe rij
     if (col >= cols) {
       col = 0;
       row++;
-      rowHeight = 0; // reset voor nieuwe rij
+      rowHeight = 0;
     }
-  }
-
-  // canvas hoogte aanpassen zodat alles past
-  let bottom = 0;
-  inspirationArt.forEach(insp => {
-    const b = insp.y + insp.blockHeight;
-    if (b > bottom) bottom = b;
   });
 
-  canvas.height = bottom + paddingY; // extra ademruimte onderaan
+  // canvas hoogte aanpassen
+  let bottom = 0;
+  inspirationArt.forEach(i => bottom = Math.max(bottom, i.y + i.blockHeight));
+  canvas.height = bottom + paddingY;
 
   inspirationPositionsInitialized = true;
+}
+
+function placeVanGoghArt() {
+  if (!activeInspiration) return;
+
+  const related = vanGoghArt.filter(v => v.inspirationId === activeInspiration.id);
+
+  const paddingX = 40;
+  const paddingY = 20;
+  const gapX = 40;
+  const gapY = 40;
+
+  // Bereken de rechterkant van de inspiratie-schilderijen
+  const inspirationRight = Math.max(...inspirationArt.map(i => i.x + INSP_SIZE));
+
+  // start X iets rechts van inspiratie
+  const startX = inspirationRight + paddingX;
+  let col = 0;
+  let row = 0;
+  let rowHeight = 0;
+
+  related.forEach(v => {
+    if (!v.imgObj) {
+      v.imgObj = new Image();
+      v.imgObj.src = v.img;
+    }
+
+    // titel + beschrijving hoogte
+    ctx.font = "bold 14px Inter, Arial, sans-serif";
+    const titleHeight = measureWrappedText(ctx, v.title, VAN_WIDTH, 16);
+    const inspData = inspirationArt.find(i => i.id === v.inspirationId);
+    ctx.font = "13px Inter, Arial, sans-serif";
+    const descHeight = inspData?.description ? measureWrappedText(ctx, inspData.description, VAN_WIDTH, 16) : 0;
+
+    const vBlockHeight = VAN_HEIGHT + 8 + titleHeight + 4 + descHeight + 8;
+    v.blockHeight = vBlockHeight;
+
+    // X rechts van inspiratie + col
+    v.x = startX + col * (VAN_WIDTH + gapX);
+    // Y gelijk aan inspiratie-top of in een grid eronder
+    v.y = paddingY + row * (vBlockHeight + gapY);
+
+    rowHeight = Math.max(rowHeight, vBlockHeight + gapY);
+
+    col++;
+    // nieuwe rij als Van Gogh-schilderijen te breed worden
+    const totalWidth = startX + col * (VAN_WIDTH + gapX);
+    if (totalWidth > cw() - paddingX) {
+      col = 0;
+      row++;
+      rowHeight = 0;
+    }
+  });
+
+  // canvasbreedte en hoogte aanpassen zodat alles zichtbaar blijft
+  let bottom = Math.max(...related.map(v => v.y + v.blockHeight));
+  canvas.height = Math.max(canvas.height, bottom + paddingY);
+
+  const rightMost = Math.max(...related.map(v => v.x + VAN_WIDTH));
+  canvas.width = Math.max(canvas.width, rightMost + paddingX);
 }
 
 
@@ -991,6 +1022,11 @@ function drawVanGogh() {
     placeInspirationArt();
   }
 
+  if (activeInspiration && !drawVanGogh.vanGoghPlaced) {
+    placeVanGoghArt();
+    drawVanGogh.vanGoghPlaced = true; // voorkomt dat ze bij elke frame opnieuw geplaatst worden
+}
+  
   // ================================
   // 1. INSPIRATIE-SCHILDERIJEN
   // ================================
@@ -1214,12 +1250,15 @@ canvas.addEventListener("click", () => {
     ) {
       activeInspiration = insp;
 
-      // 🔥 reset Van Gogh posities
-      vanGoghArt.forEach(v => {
-        v.x = undefined;
-        v.y = undefined;
-      });
-      drawVanGogh.placedRects = [];
+  // 🔥 reset Van Gogh posities
+    vanGoghArt.forEach(v => {
+  v.x = undefined;
+  v.y = undefined;
+});
+
+// 🔑 forceer opnieuw plaatsen rechts
+    drawVanGogh.vanGoghPlaced = false;
+
 
       break;
     }
