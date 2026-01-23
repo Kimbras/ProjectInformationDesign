@@ -6,11 +6,14 @@
   <link rel="stylesheet" href="style.css" />
 </head>
 <body>
-  <div class="app">
-    <video id="introVideo" autoplay muted playsinline>
-  <source src="img/36316092-a8c7-4c54-8641-c184a785ba9a.MP4" type="video/mp4">
-</video>
+<div id="intro-video">
+  <video id="video" autoplay muted playsinline>
+    <source src="img/intro-freethemap2.mp4" type="video/mp4">
+    Je browser ondersteunt geen video.
+  </video>
+</div>
 
+  <div class="app">
     <!-- Sidebar links -->
  <div class="ui" id="sidebar">
   <button id="toggleSidebar">☰</button> <!-- toggle-knop -->
@@ -19,7 +22,7 @@
   <button class="subBtn" data-group="schilderijen" data-view="year" onclick="sortByYear()">Jaar</button>
   <button class="subBtn" data-group="schilderijen" data-view="size" onclick="sortBySize()">Grootte</button>
   <button class="subBtn" data-group="schilderijen" data-view="madeIn" onclick="sortByMadeLocation()">Gemaakt in</button>
-  <button id="topMuseums" class="top10-overlay" class="subBtn" data-group="schilderijen" data-view="currentLocation" onclick="sortByCurrentLocation()">Nu in museum</button>
+  <button id="topMuseums" class="subBtn" data-group="schilderijen" data-view="currentLocation" onclick="sortByCurrentLocation()">Nu in museum</button>
   <button id="vanGoghBtn" class="subBtn" data-view="inspiration" data-group="schilderijen">Inspiratie Van Gogh</button>
 
   <button id="showLettersBtn" class="mainBtn" data-group="brieven" onclick="VanGogh()">Brieven</button>
@@ -30,6 +33,7 @@
 <div id="canvasContainer">
       <canvas id="canvas"></canvas>
       <div id="storyOverlay"></div>
+    
 
        <!-- ✅ Colofon content -->
       <div id="colofonOverlay">
@@ -92,6 +96,7 @@
     </div>
     </div>
 
-  <script src="script.js"></script>
+  <script src="script.js">
+  </script>
 </body>
 </html>
