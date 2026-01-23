@@ -79,12 +79,17 @@ button {
 }
 
 #canvasContainer{
-  position: relative; 
+  position: relative;
   flex: 1;
   height: 100%;
-  margin-left: 250px;
+  margin-left: 0; /* standaard zonder sidebar */
   transition: margin-left 0.5s ease;
 }
+#sidebar.show ~ #canvasContainer {
+  margin-left: 250px; /* breedte van sidebar */
+}
+
+
 
 /*#sidebar.show ~ #canvasContainer {
   margin-left: 250px;} /* zelfde breedte als sidebar */
