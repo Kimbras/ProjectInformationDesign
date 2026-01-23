@@ -1,9 +1,15 @@
 /* =====================
    CANVAS SETUP
 ===================== */
-function hideColofon() {
-  colofonOverlay.style.display = "none";
-}
+  const video = document.getElementById("video");
+  const intro = document.getElementById("intro-video");
+  const main = document.getElementById("main-content");
+
+  video.onended = function () {
+    intro.style.display = "none";
+    main.style.display = "block";
+  };
+
 
 const canvas = document.getElementById("canvas");
 const ctx = canvas.getContext("2d");
