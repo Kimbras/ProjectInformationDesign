@@ -1,19 +1,32 @@
 /* =====================
    CANVAS SETUP
 ===================== */
-  const video = document.getElementById("video");
-  const intro = document.getElementById("intro-video");
-  const main = document.getElementById("main-content");
+const video = document.getElementById("video");
+const intro = document.getElementById("intro-video");
+const main = document.querySelector(".app");
 
-  video.onended = function () {
+video.addEventListener("ended", () => {
+  // fade-out (zoals we eerder deden)
+  intro.classList.add("fade-out");
+
+  setTimeout(() => {
     intro.style.display = "none";
-    main.style.display = "block";
-  };
+    main.style.display = "flex";
+
+    // 👉 START HET VERHAAL HIER
+    storyIndex = 0;
+    autoPlay = true;
+    showStoryText(storyIndex);
+
+  }, 1200);
+});
+
 
 
 const canvas = document.getElementById("canvas");
 const ctx = canvas.getContext("2d");
 const imageCache = {};
+const sidebar = document.getElementById("sidebar");
 const colofonOverlay = document.getElementById("colofonOverlay");
 const storyOverlay = document.getElementById("storyOverlay");
 colofonOverlay.style.display = "none"; // start verborgenconst colofonOverlay
@@ -246,28 +259,33 @@ ctx.scale(dpr, dpr);
 ctx.imageSmoothingEnabled = true;
 ctx.imageSmoothingQuality = "high";
 
-
 function resize() {
-  canvas.width = window.innerWidth - sidebar.offsetWidth;
+  canvas.width = window.innerWidth - (sidebar.offsetWidth || 250);
   canvas.height = window.innerHeight;
 }
-
 window.addEventListener("resize", resize);
 resize();
 
 const mouse = { x: 0, y: 0 };
 
-
 canvas.addEventListener("mousemove", (e) => {
   const rect = canvas.getBoundingClientRect();
-  mouse.x = e.clientX - rect.left;
-  mouse.y = e.clientY - rect.top;
+  mouse.x = (e.clientX - rect.left);
+  mouse.y = (e.clientY - rect.top);
 });
 
-
-
-
 const MARGIN = 30;
+
+function cw() {
+  return canvas.clientWidth;
+}
+
+function ch() {
+  return canvas.clientHeight;
+}
+function clamp(value, min, max) {
+  return Math.max(min, Math.min(max, value));
+}
 
 function cw() {
   return canvas.clientWidth;
@@ -675,9 +693,13 @@ function VanGogh() {
 
 
 function resizeCanvas() {
-  canvas.width = window.innerWidth - (sidebar?.offsetWidth || 0);
+  // canvas altijd volledige viewport
+  canvas.width = window.innerWidth;
   canvas.height = window.innerHeight;
 }
+window.addEventListener("resize", resizeCanvas);
+resizeCanvas();
+
 
 letters.forEach(l => {
   if (performance.now() - l.lastTargetChange > l.changeTargetInterval) {
@@ -1344,6 +1366,18 @@ function placeVanGoghArt() {
   canvas.width = Math.max(canvas.width, rightMost + paddingX);
 }
 
+video.addEventListener("ended", () => {
+  intro.classList.add("fade-out");
+  setTimeout(() => {
+    intro.style.display = "none";
+    main.style.display = "flex";
+
+    sidebar.classList.remove("show"); // nog steeds verborgen
+    storyIndex = 0;
+    autoPlay = true;
+    showStoryText(storyIndex);
+  }, 1200);
+});
 
 
 
@@ -6038,6 +6072,7 @@ const bolletjes = paintings.map((p, i) => {
 /* =====================
    CLUSTERING
 ===================== */
+
 function sortByCluster(field) {
   clusterLabels = [];
   const groups = {};
@@ -6432,167 +6467,107 @@ mainBtns.forEach(btn => {
 
 
 
-// verhaal vertellen
 
+// overlay en story
+const overlay = document.getElementById("storyOverlay");
+let storyIndex = 0;
+let autoPlay = true;
+
+// Verhaal teksten
 const storyText = [
-  //begin scherm
   "In de sterren zie je de werken van Gogh die verspreid zijn over de wereld en musea.",
   "Daarnaast zie je waar de werken zijn gemaakt tijdens zijn leven.",
-
-  // nu in museum
   "Jo van gogh-bonger verkocht een aantal werken van van Gogh strategisch over verschillende delen van de wereld",
   "om zo de naamsbekendheid van de schilderijen groter te maken.",
-  " In haar eigen woorden 'Het is een offer voor Vincents roem'.",
-
-  // gemaakt in
-    "Van Gogh was een reizend, lusteloze kunstenaar die erkenning zocht maar niet vond tijdens zijn leven.",
-  "Nederland had weinig meer te bieden en hij zocht inspiratie in de natuur van Zuid-Frankrijk en wilde een kunstcollectief creëren. ",
+  "In haar eigen woorden 'Het is een offer voor Vincents roem'.",
+  "Van Gogh was een reizend, lusteloze kunstenaar die erkenning zocht maar niet vond tijdens zijn leven.",
+  "Nederland had weinig meer te bieden en hij zocht inspiratie in de natuur van Zuid-Frankrijk en wilde een kunstcollectief creëren.",
   "Hij had geen plannen om weer terug te keren naar Nederland.",
-
-    // Brieven pagina
-    "In de brieven zie je zijn worstelingen met zichzelf en hoe hij zich voelt over zijn vervreemding.",
+  "In de brieven zie je zijn worstelingen met zichzelf en hoe hij zich voelt over zijn vervreemding.",
   "Je ziet bijv. verder stukken waarin hij duidelijk maakt hoe hij geïnspireerd is door de Japanse kunst.",
   "Neem een kijkje door de brieven en kruip in het leven van Gogh.",
-    "Deze brieven zijn essentieel geweest voor de branding van het merk van Gogh,",
-    "het biedt een inkijkje in het gedachtegang van Gogh en zorgde zo voor het vergroten van de bekendheid en mythevorming wereldwijd.",
-     "Dit allemaal verzameld en uitgebracht door Jo van gogh-bonger",
-      "en de brieven worden steeds opnieuw onder de aandacht gebracht om van Gogh tot de verbeelding te laten spreken.",
-      "Kijk zelf naar de brieven, je kan erop klikken voor meer informatie."
+  "Deze brieven zijn essentieel geweest voor de branding van het merk van Gogh.",
+  "Het biedt een inkijkje in het gedachtegang van Gogh en zorgde zo voor het vergroten van de bekendheid en mythevorming wereldwijd.",
+  "Dit allemaal verzameld en uitgebracht door Jo van gogh-bonger",
+  "En de brieven worden steeds opnieuw onder de aandacht gebracht om van Gogh tot de verbeelding te laten spreken.",
+  "Kijk zelf naar de brieven, je kan erop klikken voor meer informatie."
 ];
 
-let storyIndex = 0;
-const overlay = document.getElementById("storyOverlay");
-let autoHideTimeout = null;
-let autoPlay = true; // fase 1: automatisch afspelen
+// Start verhaal pas na de video
+video.addEventListener("ended", () => {
+  intro.classList.add("fade-out"); // CSS fade
+  setTimeout(() => {
+    intro.style.display = "none";
+    main.style.display = "flex";
 
-function showStoryText(index, showOverlay = true) {
+    // start verhaal
+    storyIndex = 0;
+    autoPlay = true;
+    showStoryText(storyIndex);
+  }, 3000);
+});
+
+// Speciale pauzes per index
+const specialPauses = {
+  2: () => { overlay.style.display="none"; sortByYear(); setTimeout(nextStory,6000); },
+  5: () => { overlay.style.display="none"; letters.forEach(l=>{ l.targetX=LETTER_MARGIN+Math.random()*(cw()-LETTER_MARGIN*2); l.targetY=LETTER_MARGIN+Math.random()*(ch()-LETTER_MARGIN*2); l.lastTargetChange=performance.now(); }); bolletjes.forEach(b=>b.target=null); showTop10Musea(); setTimeout(nextStory,3000); },
+  8: () => { overlay.style.display="none"; letters.forEach(l=>{ l.targetX=LETTER_MARGIN+Math.random()*(cw()-LETTER_MARGIN*2); l.targetY=LETTER_MARGIN+Math.random()*(ch()-LETTER_MARGIN*2); l.lastTargetChange=performance.now(); }); bolletjes.forEach(b=>b.target=null); sortByMadeLocation(); setTimeout(nextStory,3000); },
+  16: () => { overlay.style.display="block"; autoPlay=false; overlay.addEventListener("click", manualClickHandler); }
+};
+
+// Toont de volgende tekst
+function nextStory() {
+  storyIndex++;
+  showStoryText(storyIndex);
+}
+
+// bij starten van de app
+sidebar.classList.remove("show"); // verborgen
+
+
+// Hoofdfunctie
+function showStoryText(index) {
   if (index >= storyText.length) {
     overlay.style.display = "none";
-    sidebar.classList.add("show"); // sidebar tonen
+    sidebar.classList.add("show");
     resizeCanvas();
     autoPlay = false;
-    overlay.addEventListener("click", manualClickHandler);
     return;
   }
 
-  if (showOverlay) {
-  } else {
-    overlay.style.display = "none";
-    overlay.textContent = storyText[index];
-    overlay.style.display = "block"
-  }
+  video.addEventListener("ended", () => {
+  intro.classList.add("fade-out");
+  setTimeout(() => {
+    intro.style.display = "none";
+    main.style.display = "flex";
 
-  if (!autoPlay) return; // handmatige modus
-
-  // Hier definieer je speciale pauzes / functies per index
-  const specialPauses = {
-    // na intro (eerste 2 zinnen) -> tijdlijn cluster
-    2: () => {
-      overlay.style.display = "none";
-      sortByYear(); // laat tijdlijncluster zien
-      setTimeout(() => {
-        resetBolletjes();
-        storyIndex++;
-        showStoryText(storyIndex);
-      }, 6000); // 3 seconden wachten
-    },
-
-    // Nu in museum (index 2,3,4) -> 10 seconden pauze
-    5: () => {
-      overlay.style.display = "none";
-      // bolletjes weer vrij laten bewegen
-      letters.forEach(l => {
-        l.targetX = LETTER_MARGIN + Math.random() * (cw() - LETTER_MARGIN * 2);
-        l.targetY = LETTER_MARGIN + Math.random() * (ch() - LETTER_MARGIN * 2);
-        l.lastTargetChange = performance.now();
-      });
-      bolletjes.forEach(b => b.target = null);
-      showTop10Musea();
-      setTimeout(() => {
-        storyIndex++;
-        showStoryText(storyIndex);
-      }, 3000); // 10 seconden pauze
-    },
+    sidebar.classList.remove("show"); // nog steeds verborgen
+    storyIndex = 0;
+    autoPlay = true;
+    showStoryText(storyIndex);
+  }, 1200);
+});
 
 
-    // Gemaakt in (index 7) -> 10 seconden pauze
-    8: () => {
-      overlay.style.display = "none";
-      letters.forEach(l => {
-        l.targetX = LETTER_MARGIN + Math.random() * (cw() - LETTER_MARGIN * 2);
-        l.targetY = LETTER_MARGIN + Math.random() * (ch() - LETTER_MARGIN * 2);
-        l.lastTargetChange = performance.now();
-      });
-      bolletjes.forEach(b => b.target = null);
-      sortByMadeLocation();
-      setTimeout(() => {
-        storyIndex++;
-        showStoryText(storyIndex);
-      }, 3000); // 10 seconden pauze
-    },
+  overlay.textContent = storyText[index];
+  overlay.style.display = "block";
 
-    // Brieven pagina (laat gebruiker zelf klikken)
-    16: () => {
-      overlay.style.display = "block";
-      autoPlay = false; // stop automatische flow
-      VanGogh()
-      overlay.addEventListener("click", manualClickHandler);
-    }
-  };
+  if (!autoPlay) return;
 
-  // Check of we een speciale pauze hebben voor deze index
   if (specialPauses[index]) {
     specialPauses[index]();
   } else {
-    // normale flow: 4 seconden per zin
-    setTimeout(() => {
-      overlay.style.display = "none";
-      storyIndex++;
-      showStoryText(storyIndex);
-    }, 4000);
+    setTimeout(nextStory, 4000); // normaal 4 sec
   }
 }
 
-
-// Handmatige klik (fase 2)
+// Handmatige klik functie
 function manualClickHandler() {
-  if (storyIndex >= storyText.length) {
-    overlay.style.display = "none";
-    return;
-  }
+  if (storyIndex >= storyText.length) return;
   overlay.style.display = "block";
   overlay.textContent = storyText[storyIndex];
   storyIndex++;
 }
 
-// Start automatisch afspelen
-showStoryText(storyIndex);
-
-draw(); // onderaan je script
-
-function resetBolletjes() {
-  // Overlay verbergen
-  overlay.style.display = "none";
-
-  // Bolletjes weer vrij laten bewegen
-  bolletjes.forEach(b => {
-    b.target = null;
-
-    // random nieuwe home positie
-    b.homeX = Math.random() * cw();
-    b.homeY = Math.random() * ch();
-  });
-
-  // Letters vrij laten bewegen
-  if (letters) {
-    letters.forEach(l => {
-      l.targetX = LETTER_MARGIN + Math.random() * (cw() - LETTER_MARGIN * 2);
-      l.targetY = LETTER_MARGIN + Math.random() * (ch() - LETTER_MARGIN * 2);
-      l.lastTargetChange = performance.now();
-    });
-  }
-}
-
-
-
-
+// Start canvas
+draw();

@@ -100,14 +100,15 @@ button {
   background-color: #111;
   color: white;
   padding: 16px;
-  display: flex;
+  display: none;
   flex-direction: column;
   gap: 10px;
   z-index: 10;
+  opacity: 0;
   overflow-y: auto;
   font-family: "Banita", serif; 
-  /*transform: translateX(100%); /* begin buiten scherm */
-  /*transition: transform 0.5s ease; /* animatie */
+  transform: translateX(100%); /* begin buiten scherm */
+  transition: transform 0.5s ease; /* animatie */
 }
 
 #sidebar.show {
